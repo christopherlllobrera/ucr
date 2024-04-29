@@ -4,8 +4,10 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use Filament\Forms\Set;
+use NumberFormatter;
 use App\Models\Accrual;
+use Filament\Forms\Set;
+use Livewire\Component;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
@@ -14,6 +16,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Grouping\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -26,8 +29,8 @@ use App\Filament\Resources\AccrualsResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AccrualsResource\RelationManagers;
 use App\Filament\Resources\AccrualsResource\Pages\UpdateAccruals;
-use Livewire\Component;
-use NumberFormatter;
+use App\Filament\Resources\AccrualsResource\Pages\EditAccrualsParkDoc;
+use Filament\Pages\Page;
 
 class AccrualsResource extends Resource
 {
@@ -65,29 +68,50 @@ class AccrualsResource extends Resource
                 TextInput::make('client_name')
                     ->label('Client')
                     ->placeholder('Client')
-                    ->maxLength(32)
-                    ->columnSpan('full'),
+                    ->maxLength(50)
+                    ->columnSpan('full')
+                    ->disabledOn(Pages\EditAccrualsParkDoc::class),
                 TextInput::make('person_in_charge')
                     ->label('Person-in-charge')
                     ->maxLength(32)
+                    ->disabledOn(Pages\EditAccrualsParkDoc::class)
                     ->placeholder('Person-in-charge'),
                 TextInput::make('wbs_no')
                     ->label('WBS No.')
-                    ->maxLength(32)
+                    ->maxLength(25)
+                    ->disabledOn(Pages\EditAccrualsParkDoc::class)
                     ->placeholder('WBS No.'),
                 TextInput::make('particulars')
                     ->label('Particulars')
                     ->maxLength(50)
-                    ->placeholder('Particulars')
-                    ->columnSpanFull(),
+                    ->disabledOn(Pages\EditAccrualsParkDoc::class)
+                    ->placeholder('Particulars'),
+                Select::make('business_unit')
+                    ->label('Business Unit')
+                    ->disabledOn(Pages\EditAccrualsParkDoc::class)
+                    ->options([
+                        'Facility Services' => 'Facility Services',
+                        'Transport Services' => 'Transport Services',
+                        'Warehouse Services' => 'Warehouse Services',
+                        'General Services' => 'General Services',
+                        'Cons & Reno Services' => 'Cons & Reno Services',
+                    ]),
                 ])->columnspan(2)
                   ->columns(2),
                 Section::make('')
                     ->schema([
-                        DatePicker::make('period_covered')
-                            ->label('Period Covered'),
+                        DatePicker::make('period_started')
+                            ->label('Period started')
+                            ->disabledOn(Pages\EditAccrualsParkDoc::class)
+                            ->minDate(now()->subYears(3)),
+                        DatePicker::make('period_ended')
+                            ->label('Period ended')
+                            ->disabledOn(Pages\EditAccrualsParkDoc::class)
+                            ->minDate(now()->subYears(3))
+                            ->afterOrEqual('period_started'),
                         Select::make('month')
                             ->label('Month')
+                            ->disabledOn(Pages\EditAccrualsParkDoc::class)
                             ->options([
                                 'January' => 'January',
                                 'February' => 'February',
@@ -102,17 +126,10 @@ class AccrualsResource extends Resource
                                 'November' => 'November',
                                 'December' => 'December',
                             ]),
-                        Select::make('business_unit')
-                                ->label('Business Unit')
-                                ->options([
-                                    'Facility Services' => 'Facility Services',
-                                    'Transport Services' => 'Transport Services',
-                                    'Warehouse Services' => 'Warehouse Services',
-                                    'General Services' => 'General Services',
-                                    'Cons & Reno Services' => 'Cons & Reno Services',
-                                ]),
+
                         Select::make('contract_type')
                                 ->label('Contract Type')
+                                ->disabledOn(Pages\EditAccrualsParkDoc::class)
                                 ->options([
                                     'LCSP' => 'LCSP',
                                     'OOS' => 'OOS',
@@ -126,8 +143,8 @@ class AccrualsResource extends Resource
                                 ->numeric()
                                 ->minValue(1)
                                 ->inputMode('decimal')
+                                ->disabledOn(Pages\EditAccrualsParkDoc::class)
                                 ->placeholder('Accrual Amount'),
-
                         FileUpload::make('accruals_attachment')
                                 ->label('Attachments')
                                 ->deletable(true)
@@ -153,19 +170,17 @@ class AccrualsResource extends Resource
                                 // ->imageResizeTargetHeight('1080')
                                 // ->imageEditorViewportWidth('1920')
                                 // ->imageEditorViewportHeight('1080'),
-                                ,
+                                ->disabledOn(Pages\EditAccrualsParkDoc::class),
                         ])->columnspan(2),
-                    // Section::make()
-                    //     ->schema([
-                    //     TextInput::make('UCR_Park_Doc')
-                    //         ->label('UCR Park Document No.')
-                    //         ->placeholder('UCR Park Document No.'),
-                    //         //->disabledOn('create'),
-                    //         //->hiddenOn('create'),
-                    //     DatePicker::make('Date_Accrued')
-                    //         ->label('Date Accrued in SAP')
-                    //         //->hiddenOn('create'),
-                    //     ])->columnspan(1)->columns(1)//->hiddenOn('create'),
+                    Section::make()
+                        ->schema([
+                        TextInput::make('UCR_Park_Doc')
+                            ->label('UCR Park Document No.')
+                            ->placeholder('UCR Park Document No.')
+                            ->numeric(),
+                        DatePicker::make('date_accrued')
+                            ->label('Date Accrued in SAP')
+                        ])->columnspan(1)->columns(1)->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
             ])->columns(3);
     }
 
@@ -173,33 +188,45 @@ class AccrualsResource extends Resource
     {
         return $table
             ->columns([
+
                 TextColumn::make('ucr_ref_id')
                     ->label('UCR Reference ID')
                     ->searchable()
+                    ->weight(FontWeight::Bold)
                     ->sortable(),
                 TextColumn::make('client_name')
                     ->label('Client')
                     ->searchable()
+                    //->limit(15)
                     ->sortable(),
-                // TextColumn::make('parkdocument.date_accrued')
-                //     ->label('Date Accrued in SAP')
-                //     ->searchable()
-                //     ->sortable(),
-                // TextColumn::make('parkdocument.UCR_Park_Doc')
-                //     ->label('UCR Park Document No.')
-                //     ->searchable()
-                //     ->sortable(),
+                TextColumn::make('date_accrued')
+                    ->label('Date Accrued in SAP')
+                    ->date()
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('UCR_Park_Doc')
+                    ->label('UCR Park Doc No.')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('business_unit')
                     ->label('Business Unit')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('accrual_amount')
                     ->label('Accrual Amount')
+                    ->money('Php')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('period_covered')
-                    ->label('Period Covered')
+                TextColumn::make('period_started')
+                    ->label('Period Started')
                     ->searchable()
+                    ->date()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('period_ended')
+                    ->label('Period Ended')
+                    ->searchable()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('month')
@@ -217,15 +244,17 @@ class AccrualsResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->recordUrl(null)
             ->filters([
                 //
             ])
             ->actions([
                 ActionGroup::make([
                     EditAction::make(),
-                        //->label('Add UCR No.'),
-
+                    Action::make('edit')
+                        ->label('Add Park Doc')
+                        ->icon('heroicon-o-document-text')
+                        ->url(fn ($record) => AccrualsResource::getUrl('edit-parkdoc', ['record' => $record->id]))
                 ]),
             ])
             ->bulkActions([
@@ -248,7 +277,7 @@ class AccrualsResource extends Resource
             'index' => Pages\ListAccruals::route('/'),
             'create' => Pages\CreateAccruals::route('/create'),
             'edit' => Pages\EditAccruals::route('/{record}/edit'),
-
+            'edit-parkdoc' => Pages\EditAccrualsParkDoc::route('/{record}/edit-parkdoc'),
         ];
     }
 }

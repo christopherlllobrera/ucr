@@ -11,4 +11,14 @@ class CreateAccruals extends CreateRecord
     protected static string $resource = AccrualsResource::class;
 
     protected static ?string $title = 'Create Accruals Detail';
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Accruals created successfully';
+    }
 }

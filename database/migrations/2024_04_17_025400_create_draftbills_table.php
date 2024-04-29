@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('draftbills', function (Blueprint $table) {
             $table->id();
             $table->string('ucr_ref_id');
-            $table->string('draftbill_no')->nullable();
+            $table->string('draftbill_no')->unique()->nullable();
             $table->string('draftbill_amount')->nullable();
             $table->date('bill_date_created')->nullable();
             $table->date('bill_date_submitted')->nullable();

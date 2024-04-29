@@ -31,6 +31,7 @@ class ParkDocumentResource extends Resource
     protected static ?string $breadcrumb = 'UCR Park Documents';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'UCR Park Document';
+    protected static bool $shouldRegisterNavigation = false;
 
 
     public static function form(Form $form): Form

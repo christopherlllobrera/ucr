@@ -15,7 +15,7 @@ class ListDraftbills extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Create Draft bill'),
+                ->label('Select UCR Reference ID'),
 
         ];
     }

@@ -6,13 +6,12 @@ use App\Filament\Resources\AccrualsResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditAccruals extends EditRecord
+class EditAccrualsParkDoc extends EditRecord
 {
     protected static string $resource = AccrualsResource::class;
-    protected static ?string $title = 'Edit Accruals';
-    protected static ?string $breadcrumb = 'Edit';
+    protected static ?string $title = 'Add Park Documents';
+    protected static ?string $breadcrumb = 'Add';
     protected static ?string $slug = 'add';
-    protected static ?string $recordTitleAttribute = 'ucr_ref_id';
 
     protected function getHeaderActions(): array
     {
@@ -25,8 +24,11 @@ class EditAccruals extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    protected function getSavedNotificationTitle(): ?string
+    protected function getUpdateNotificationTitle(): ?string
     {
-        return 'Accruals updated successfully';
+        return 'Park Documents updated successfully';
     }
+
+
+
 }
