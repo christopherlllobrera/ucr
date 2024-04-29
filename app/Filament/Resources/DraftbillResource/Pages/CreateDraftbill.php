@@ -9,5 +9,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDraftbill extends CreateRecord
 {
     protected static string $resource = DraftbillResource::class;
-    protected static ?string $title = 'Create Draft Bill';
+    protected static ?string $title = 'Select UCR Reference ID';
+    protected static ?string $breadcrumb = 'Select';
 }
+

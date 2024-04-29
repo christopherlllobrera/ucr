@@ -18,12 +18,15 @@ return new class extends Migration
             $table->string('person_in_charge')->nullable();
             $table->string('wbs_no')->nullable();
             $table->string('particulars')->nullable();
-            $table->date('period_covered')->nullable();
+            $table->date('period_started')->nullable();
+            $table->date('period_ended')->nullable();
             $table->string('month')->nullable();
             $table->string('business_unit')->nullable();
             $table->string('contract_type')->nullable();
             $table->double('accrual_amount')->nullable();
             $table->string('accruals_attachment')->nullable();
+            $table->string('UCR_Park_Doc')->nullable();
+            $table->date('date_accrued')->nullable();
             $table->timestamps();
         });
     }

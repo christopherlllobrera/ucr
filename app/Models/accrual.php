@@ -15,12 +15,15 @@ class accrual extends Model
         'person_in_charge',
         'wbs_no',
         'particulars',
-        'period_covered',
+        'period_started',
+        'period_ended',
         'business_unit',
         'contract_type',
         'month',
         'accrual_amount',
         'accruals_attachment',
+        'UCR_Park_Doc',
+        'date_accrued',
     ];
 
     protected $casts = [
@@ -32,6 +35,6 @@ class accrual extends Model
         return $this->belongsTo(accrual::class, 'ucr_ref_id');
     }
 
-    
+
 
 }
