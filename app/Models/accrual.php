@@ -34,7 +34,4 @@ class accrual extends Model
     {
         return $this->belongsTo(accrual::class, 'ucr_ref_id');
     }
-
-
-
 }

@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\FontProviders\GoogleFontProvider;
 
 class MliPanelProvider extends PanelProvider
 {
@@ -29,9 +30,13 @@ class MliPanelProvider extends PanelProvider
             ->id('mli')
             ->path('mli')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
+            ->colors(['primary' => Color::Orange,])
+            ->favicon('images/favicon.ico')
+            ->font('Inter', provider: GoogleFontProvider::class)
+            ->brandLogo(fn() => view('filament.app.logo'))
+            //->brandLogo('images/MLI (1).svg')
+            ->brandLogoHeight('60px')
+            ->darkMode(false)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -39,12 +44,15 @@ class MliPanelProvider extends PanelProvider
             ])
             ->sidebarWidth('15rem')
 
+            //->sidebarFullyCollapsibleOnDesktop(false)
+            //->sidebarCollapsibleOnDesktop(true)
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 //Widgets\AccountWidget::class,
                         AccrualStats::class,
                 //Widgets\FilamentInfoWidget::class,
             ])
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

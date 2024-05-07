@@ -9,11 +9,19 @@ use Filament\Resources\Pages\EditRecord;
 class EditInvoice extends EditRecord
 {
     protected static string $resource = InvoiceResource::class;
+    protected static ?string $title = 'Invoice';
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
+        ];
+    }
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction()->hidden(),
+            $this->getCancelFormAction()->hidden(),
         ];
     }
 }

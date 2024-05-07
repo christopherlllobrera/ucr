@@ -13,20 +13,8 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('ucr_ref_id');
-            $table->string('reversal_doc')->nullable();
-            $table->string('gr_amount')->nullable();
-            $table->date('date_reversal')->nullable();
-            $table->string('accounting_doc')->nullable();
-            $table->date('invoice_date_received')->nullable();
-            $table->string('pojo_no')->nullable();
-            $table->string('gr_no_meralco')->nullable();
-            $table->string('billing_statement')->nullable();
-            $table->date('invoice_date_approved')->nullable();
-            $table->date('invoice_posting_date')->nullable();
-            $table->string('invoice_posting_amount')->nullable();
-            $table->date('invoice_date_forwarded')->nullable();
-            $table->string('invoice_attachment')->nullable();
+            $table->foreignId('ucr_ref_id')->constrained('accruals')->cascadeOnDelete();
+            $table->foreignId('draftbill_no')->constrained('draftbilldetails')->cascadeOnDelete();
             $table->timestamps();
         });
     }
