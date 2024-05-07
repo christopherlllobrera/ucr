@@ -12,6 +12,18 @@ class Handler extends ExceptionHandler
      *
      * @var array<int, string>
      */
+    function render($request, Throwable $exception)
+    {
+            if ($this->isHttpException($exception)) {
+                if ($exception->getCode() == 404) {
+                    return response()->view('errors.404', [], 404);
+                }
+                if ($exception->getCode() == 500) {
+                    return response()->view('errors.500', [], 500);
+                }
+            }
+            return parent::render($request, $exception);
+         }
     protected $dontFlash = [
         'current_password',
         'password',

@@ -31,12 +31,14 @@ use App\Filament\Resources\AccrualsResource\RelationManagers;
 use App\Filament\Resources\AccrualsResource\Pages\UpdateAccruals;
 use App\Filament\Resources\AccrualsResource\Pages\EditAccrualsParkDoc;
 use Filament\Pages\Page;
+use Filament\Panel;
 
 class AccrualsResource extends Resource
 {
     protected static ?string $model = Accrual::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?int $navigationSort = 1;
+    protected static bool $softDelete = true;
 
 
     public static function form(Form $form): Form
@@ -187,8 +189,9 @@ class AccrualsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No Accruals yet')
+            ->emptyStateDescription('Once you create your first accrual, it will appear here.')
             ->columns([
-
                 TextColumn::make('ucr_ref_id')
                     ->label('UCR Reference ID')
                     ->searchable()
@@ -267,7 +270,7 @@ class AccrualsResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+
         ];
     }
 

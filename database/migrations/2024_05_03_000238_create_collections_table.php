@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\accrual;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('draftbills', function (Blueprint $table) {
+        Schema::create('collections', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ucr_ref_id')->constrained('accruals')->cascadeOnDelete();
-            //$table->string('ucr_ref_id')->nullable();
-            
+            $table->foreignId('draftbill_no')->constrained('draftbilldetails')->cascadeOnDelete();
+            $table->foreignId('invoice_no')->constrained('invoicedetails')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('draftbills');
+        Schema::dropIfExists('collections');
     }
 };

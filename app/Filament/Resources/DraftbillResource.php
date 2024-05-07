@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DraftbillResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DraftbillResource\RelationManagers;
+use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManager;
 use Faker\Provider\ar_EG\Text;
 
 class DraftbillResource extends Resource
@@ -51,22 +52,43 @@ class DraftbillResource extends Resource
                 ->reactive()
                 ->columnSpan(1)
                 ->label('UCR Reference ID')
+                ->unique(ignoreRecord:True)
+                ->validationMessages([
+                    'unique' => 'The UCR Reference ID has already been registered.',
+                ])
+                ->placeholder('Select UCR Reference ID')
                 ->afterStateUpdated(function (Get $get, Set $set,){
                     $accrual = $get('ucr_ref_id');
-                    $accrual = accrual::find($accrual);
-                    $set('client_name', $accrual->client_name);
-                    $set('person_in_charge', $accrual->person_in_charge);
-                    $set('wbs_no', $accrual->wbs_no);
-                    $set('particulars', $accrual->particulars);
-                    $set('period_started', $accrual->period_started);
-                    $set('period_ended', $accrual->period_ended);
-                    $set('month', $accrual->month);
-                    $set('business_unit', $accrual->business_unit);
-                    $set('contract_type', $accrual->contract_type);
-                    $set('accrual_amount', $accrual->accrual_amount);
-                    $set('date_accrued', $accrual->date_accrued);
-                    $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
-                    //$set('accruals_attachment', $accrual->accruals_attachment);
+                    if ($accrual) {
+                        $accrual = accrual::find($accrual);
+                        $set('client_name', $accrual->client_name);
+                        $set('person_in_charge', $accrual->person_in_charge);
+                        $set('wbs_no', $accrual->wbs_no);
+                        $set('particulars', $accrual->particulars);
+                        $set('period_started', $accrual->period_started);
+                        $set('period_ended', $accrual->period_ended);
+                        $set('month', $accrual->month);
+                        $set('business_unit', $accrual->business_unit);
+                        $set('contract_type', $accrual->contract_type);
+                        $set('accrual_amount', $accrual->accrual_amount);
+                        $set('date_accrued', $accrual->date_accrued);
+                        $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                    }
+                    else
+                    {
+                        $set('client_name', null);
+                        $set('person_in_charge', null);
+                        $set('wbs_no', null);
+                        $set('particulars', null);
+                        $set('period_started', null);
+                        $set('period_ended', null);
+                        $set('month', null);
+                        $set('business_unit', null);
+                        $set('contract_type', null);
+                        $set('accrual_amount', null);
+                        $set('date_accrued', null);
+                        $set('UCR_Park_Doc', null);
+                    }
                 })
                 ->AfterStateHydrated(function (Get $get, Set $set,){
                     if ($get('ucr_ref_id')) {
@@ -83,9 +105,9 @@ class DraftbillResource extends Resource
                         $set('accrual_amount', $accrual->accrual_amount);
                         $set('date_accrued', $accrual->date_accrued);
                         $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
-                        //$set('accruals_attachment', $accrual->accruals_attachment);
                     }
-                }),
+                })
+                ->disabledOn('edit'),
                 TextInput::make('client_name')
                     ->label('Client Name')
                     ->maxLength(50)
@@ -180,53 +202,54 @@ class DraftbillResource extends Resource
                     TextInput::make('UCR_Park_Doc')
                             ->label('UCR Park Document No.')
                             ->reactive()
-                            ->readOnly()
-                            ->required(),
+                            ->readOnly(),
                             //->disabledOn('create'),
                             //->hiddenOn('create'),
 
                             //->hiddenOn('create'),
                 ])->columnspan(1),
-                    Section::make('Draft bill Details')
-                    ->schema([
-                        TextInput::make('draftbill_no')
-                            ->label('Draftbill No.')
-                            ->unique(ignoreRecord:True)
-                            ->placeholder('Draftbill No.')
-                            ->columnSpan(1),
-                        TextInput::make('draftbill_amount')
-                            ->label('Draftbill Amount')
-                            ->label('Accrual Amount')
-                            ->inputMode('decimal')
-                            ->prefix('₱')
-                            ->numeric()
-                            ->minValue(1)
-                            ->columnSpan(2)
-                            ->placeholder('Draftbill Amount'),
-                        TextInput::make('draftbill_particular')
-                            ->label('Draftbill Particular')
-                            ->columnSpan(3)
-                            ->placeholder('Draftbill Particular'),
-                        FileUpload::make('bill_attachment')
-                            ->label('Attachment')
-                            ->columnSpanFull(),
+                    // Section::make('Draft bill Details')
+                    // ->schema([
+                    //     TextInput::make('draftbill_no')
+                    //         ->label('Draftbill No.')
+                    //         ->unique(ignoreRecord:True)
+                    //         ->placeholder('Draftbill No.')
+                    //         ->columnSpan(1),
+                    //     TextInput::make('draftbill_amount')
+                    //         ->label('Draftbill Amount')
+                    //         ->label('Draftbill Amount')
+                    //         ->inputMode('decimal')
+                    //         ->prefix('₱')
+                    //         ->numeric()
+                    //         ->minValue(1)
+                    //         ->columnSpan(2)
+                    //         ->placeholder('Draftbill Amount'),
+                    //     TextInput::make('draftbill_particular')
+                    //         ->label('Draftbill Particular')
+                    //         ->columnSpan(3)
+                    //         ->placeholder('Draftbill Particular'),
+                    //     FileUpload::make('bill_attachment')
+                    //         ->label('Attachment')
+                    //         ->columnSpanFull(),
 
-                    ])->columnspan(2)->columns(2),
-                    Section::make('Draft Bill Timeline')
-                         ->schema([
-                            DatePicker::make('bill_date_created')
-                            ->label('Date Created'),
-                        DatePicker::make('bill_date_submitted')
-                            ->label('Date Submitted'),
-                        DatePicker::make('bill_date_approved')
-                            ->label('Date Approved'),
-                         ])->columnspan(1),
+                    // ])->columnspan(2)->columns(2),
+                    // Section::make('Draft Bill Timeline')
+                    //      ->schema([
+                    //         DatePicker::make('bill_date_created')
+                    //         ->label('Date Created'),
+                    //     DatePicker::make('bill_date_submitted')
+                    //         ->label('Date Submitted'),
+                    //     DatePicker::make('bill_date_approved')
+                    //         ->label('Date Approved'),
+                    //      ])->columnspan(1),
         ])->columns(3);
 }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No Draft Bill yet')
+            ->emptyStateDescription('Once you create your first draft bill it will appear here.')
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')
@@ -234,6 +257,10 @@ class DraftbillResource extends Resource
                     ->sortable(),
                 TextColumn::make('accruals.UCR_Park_Doc')
                     ->label('UCR Park Doc')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('accruals.client_name')
+                    ->label('Client')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('accruals.period_started')
@@ -249,28 +276,20 @@ class DraftbillResource extends Resource
                 TextColumn::make('accruals.wbs_no')
                     ->label('WBS No.')
                     //->limit(10)
-                    ->toggleable (isToggledHiddenByDefault: true)
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('draftbill_no')
-                    ->label('Draftbill No')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('draftbill_amount')
-                    ->label('Draftbill Amount')
-                    ->searchable()
-                    ->money('Php')
-                    ->sortable(),
-                TextColumn::make('draftbill_particular')
-                    ->label('Draftbill Particular')
                     ->toggleable (isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('accruals.accrual_amount')
+                    ->label('Accrual Amount')
+                    ->searchable()
+                    ->sortable()
+                    ->money('Php'),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                //Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -283,7 +302,8 @@ class DraftbillResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DraftRelationManager::class,
+
         ];
     }
 
