@@ -269,5 +269,12 @@ class ParkDocumentResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            
+        ];
+    }
+
 }
 

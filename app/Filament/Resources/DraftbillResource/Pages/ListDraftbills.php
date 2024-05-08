@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\DraftbillResource\Pages;
 
-use App\Filament\Resources\DraftbillResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\DraftbillResource;
+use App\Filament\Resources\DraftbillResource\Widgets\DraftbillStats;
 
 class ListDraftbills extends ListRecords
 {
@@ -16,6 +17,13 @@ class ListDraftbills extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->label('Create Draftbill'),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            DraftbillStats::class,
         ];
     }
 }

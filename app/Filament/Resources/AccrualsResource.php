@@ -3,12 +3,14 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use Filament\Panel;
 use Filament\Tables;
 use NumberFormatter;
 use App\Models\Accrual;
 use Filament\Forms\Set;
 use Livewire\Component;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
@@ -29,9 +31,8 @@ use App\Filament\Resources\AccrualsResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AccrualsResource\RelationManagers;
 use App\Filament\Resources\AccrualsResource\Pages\UpdateAccruals;
+use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
 use App\Filament\Resources\AccrualsResource\Pages\EditAccrualsParkDoc;
-use Filament\Pages\Page;
-use Filament\Panel;
 
 class AccrualsResource extends Resource
 {
@@ -281,6 +282,15 @@ class AccrualsResource extends Resource
             'create' => Pages\CreateAccruals::route('/create'),
             'edit' => Pages\EditAccruals::route('/{record}/edit'),
             'edit-parkdoc' => Pages\EditAccrualsParkDoc::route('/{record}/edit-parkdoc'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+
+            AccrualStats::class,
+
         ];
     }
 }

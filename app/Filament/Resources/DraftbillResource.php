@@ -24,7 +24,7 @@ use App\Filament\Resources\DraftbillResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DraftbillResource\RelationManagers;
 use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManager;
-use Faker\Provider\ar_EG\Text;
+use App\Filament\Resources\DraftbillResource\Widgets\DraftbillStats;
 
 class DraftbillResource extends Resource
 {
@@ -315,4 +315,6 @@ class DraftbillResource extends Resource
             'edit' => Pages\EditDraftbill::route('/{record}/edit'),
         ];
     }
+
+    
 }
