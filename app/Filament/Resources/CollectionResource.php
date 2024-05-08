@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CollectionResource\Pages;
 use App\Filament\Resources\CollectionResource\RelationManagers;
 use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
+use App\Filament\Resources\CollectionResource\Widgets\CollectionStats;
 
 class CollectionResource extends Resource
 {
@@ -331,4 +332,6 @@ class CollectionResource extends Resource
             'edit' => Pages\EditCollection::route('/{record}/edit'),
         ];
     }
+
+    
 }

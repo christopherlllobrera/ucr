@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
+use App\Filament\Resources\DashboardResource\Widgets\UCRStats;
 use App\Models\accrual;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -48,9 +49,8 @@ class MliPanelProvider extends PanelProvider
             //->sidebarCollapsibleOnDesktop(true)
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                //Widgets\AccountWidget::class,
-                        AccrualStats::class,
-                //Widgets\FilamentInfoWidget::class,
+                Widgets\AccountWidget::class,
+                    UCRStats::class,
             ])
 
             ->middleware([

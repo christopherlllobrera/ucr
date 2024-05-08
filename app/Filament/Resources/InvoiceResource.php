@@ -22,6 +22,7 @@ use App\Filament\Resources\InvoiceResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\InvoiceResource\RelationManagers;
 use App\Filament\Resources\InvoiceResource\RelationManagers\InvoicerelationRelationManager;
+use App\Filament\Resources\InvoiceResource\Widgets\InvoiceStats;
 use App\Models\draftbilldetails;
 use App\Models\draftbill;
 use Illuminate\Support\Collection;
@@ -324,4 +325,5 @@ class InvoiceResource extends Resource
             'edit' => Pages\EditInvoice::route('/{record}/edit'),
         ];
     }
+
 }
