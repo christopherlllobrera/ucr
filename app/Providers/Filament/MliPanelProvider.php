@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
 use App\Filament\Resources\DashboardResource\Widgets\UCRStats;
+use App\Filament\Resources\DashboardResource\Widgets\UCRTable;
 use App\Models\accrual;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -51,6 +52,7 @@ class MliPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                     UCRStats::class,
+                    //UCRTable::class,
             ])
 
             ->middleware([

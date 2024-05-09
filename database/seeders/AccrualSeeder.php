@@ -16,7 +16,7 @@ class AccrualSeeder extends Seeder
     {
         DB::disableQueryLog();
         LazyCollection::make(function () {
-            $file = fopen(public_path('CE_UCR_1_1.csv'), 'r');
+            $file = fopen(public_path('CE_UCR_1_1_1.csv'), 'r');
             while (($line = fgetcsv($file, 4096)) !== false) {
                 $dataString = implode(',', $line);
                 $row = explode(',', $dataString);

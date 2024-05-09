@@ -7,6 +7,7 @@ use App\Models\invoicedetails;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Illuminate\Support\Number;
 
 class InvoiceStats extends BaseWidget
 {
@@ -14,27 +15,35 @@ class InvoiceStats extends BaseWidget
     protected static bool $isLazy = false;
     protected function getStats(): array
     {
+        $formatNumber = function (int $number): string {
+            if ($number < 1000) {
+                return (string) Number::format($number, 0);
+            }
+
+            if ($number < 1000000) {
+                return Number::format($number / 1000, 2) . 'K';
+            }
+            if($number < 1000000000){
+                return Number::format($number / 1000000, 2) . 'M';
+            }
+            return Number::format($number / 1000000000, 2) . 'B';
+        };
         return [
             Stat::make('Invoice Created', invoicedetails::count())
-                ->description('Total Invoice created')
-                ->descriptionIcon('heroicon-o-inbox-stack', IconPosition::Before)
-                ->chart([
-                    'labels' => invoicedetails::all()->pluck('created_at')->map(fn ($date) => $date->format('M d'))->toArray(),
-                    'values' => invoicedetails::all()->pluck('amount')->toArray(),
-                ])
-                ->color('success'),
-            Stat::make('Total Invoice Amount', invoicedetails::sum('gr_amount'))
+            ->description('Total Accrual created')
+            ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
+            ->color('success')
+            ->chart([1, 100, invoicedetails::count()]),
+            Stat::make('Total GR Amount', '₱' . $formatNumber(invoicedetails::sum('gr_amount')))
                 ->description('Total GR amount')
                 ->descriptionIcon('heroicon-o-inbox-stack', IconPosition::Before)
-                ->chart([
-                    'labels' => invoicedetails::all()->pluck('created_at')->map(fn ($date) => $date->format('M d'))->toArray(),
-                    'values' => invoicedetails::all()->pluck('gr_amount')->toArray(),
-                ])
-                ->color('primary'),
-            Stat::make('Accruals Created', accrual::count())
-                ->description('Total Accrual created')
-                ->descriptionIcon('heroicon-o-banknotes', IconPosition::Before)
-                ->color('info'),
+                ->chart([1, 100000, invoicedetails::sum('gr_amount')])
+                ->color('success'),
+                Stat::make('Total Posted Amount', '₱' . $formatNumber(invoicedetails::sum('invoice_posting_amount')))
+                ->description('Total posted amount')
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::Before)
+                ->chart([1, 100000, invoicedetails::sum('invoice_posting_amount')])
+                ->color('success'),
         ];
     }
 }
