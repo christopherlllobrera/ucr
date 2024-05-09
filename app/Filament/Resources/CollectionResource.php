@@ -5,15 +5,16 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\accrual;
+use App\Models\invoice;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Models\draftbill;
 use App\Models\collection;
 use Filament\Tables\Table;
+use App\Models\invoicedetails;
 use App\Models\draftbilldetails;
 use Filament\Resources\Resource;
-use Illuminate\Support\Collection as BaseCollection;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
@@ -24,9 +25,10 @@ use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CollectionResource\Pages;
+use Illuminate\Support\Collection as BaseCollection;
 use App\Filament\Resources\CollectionResource\RelationManagers;
-use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
 use App\Filament\Resources\CollectionResource\Widgets\CollectionStats;
+use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
 
 class CollectionResource extends Resource
 {
@@ -266,6 +268,147 @@ class CollectionResource extends Resource
                             ->label('Date Approved')
                             ->readOnly(),
                          ])->columnspan(1),
+
+                Section::make()
+                ->schema([
+                Select::make('reversal_doc')
+                    ->options(fn(Get $get): BaseCollection => invoice::query()
+                    ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
+                    ->pluck('draftbill_no', 'id'))
+                    ->required()
+                    ->unique(ignoreRecord:true)
+                    ->validationMessages([
+                        'unique' => 'Reversal Document already exists.',
+                    ])
+                    ->label('Reversal Document')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->reactive()
+                    ->columnSpan(1)
+                    ->afterStateUpdated(function (Get $get, Set $set,){
+                        $invoice = $get('reversal_doc');
+                        if ($invoice) {
+                            $invoice = invoicedetails::find($invoice);
+                            $set('gr_amount', $invoice->gr_amount);
+                            $set('date_reversal', $invoice->date_reversal);
+                            $set('accounting_doc', $invoice->accounting_doc);
+                            $set('invoice_date_received', $invoice->invoice_date_received);
+                            $set('pojo_no', $invoice->pojo_no);
+                            $set('gr_no_meralco', $invoice->gr_no_meralco);
+                            $set('billing_statement', $invoice->billing_statement);
+                            $set('invoice_date_approved', $invoice->invoice_date_approved);
+                            $set('invoice_posting_date', $invoice->invoice_posting_date);
+                            $set('invoice_posting_amount', $invoice->invoice_posting_amount);
+                            $set('invoice_date_forwarded', $invoice->invoice_date_forwarded);
+                        }
+                        else {
+                            $set('reversal_dic', null);
+                            $set('gr_amount', null);
+                            $set('date_reversal', null);
+                            $set('accounting_doc', null);
+                            $set('invoice_date_received', null);
+                            $set('pojo_no', null);
+                            $set('gr_no_meralco', null);
+                            $set('billing_statement', null);
+                            $set('invoice_date_approved', null);
+                            $set('invoice_posting_date', null);
+                            $set('invoice_posting_amount', null);
+                            $set('invoice_date_forwarded', null);
+                        }
+                    })
+                    // ->AfterStateHydrated(function (Get $get, Set $set,){
+                    //     if ($get('reversal_doc')) {
+                    //         $invoice = invoicedetails::find($get('reverse_doc'));
+                    //         $set('gr_amount', $invoice->gr_amount);
+                    //         $set('date_reversal', $invoice->date_reversal);
+                    //         $set('accounting_doc', $invoice->accounting_doc);
+                    //         $set('invoice_date_received', $invoice->invoice_date_received);
+                    //         $set('pojo_no', $invoice->pojo_no);
+                    //         $set('gr_no_meralco', $invoice->gr_no_meralco);
+                    //         $set('billing_statement', $invoice->billing_statement);
+                    //         $set('invoice_date_approved', $invoice->invoice_date_approved);
+                    //         $set('invoice_posting_date', $invoice->invoice_posting_date);
+                    //         $set('invoice_posting_amount', $invoice->invoice_posting_amount);
+                    //         $set('invoice_date_forwarded', $invoice->invoice_date_forwarded);
+                    //     }
+                    // })
+                    ->native(false)
+                    ->disabledOn('edit'),
+                TextInput::make('gr_amount')
+                    ->label('GR Amount')
+                    ->prefix('₱')
+                    ->numeric()
+                    ->inputMode('decimal')
+                    ->minValue(1),
+                TextInput::make('accounting_doc')
+                    ->label('Accounting Document')
+                    ->maxLength(32),
+                TextInput::make('pojo_no')
+                    ->label('PO/JO No.'),
+                TextInput::make('gr_no_meralco')
+                    ->label('GR No.  created by Meralco')
+                    ->maxLength(50),
+                TextInput::make('billing_statement')
+                    ->label('Billing Statement No.')
+                    ->maxLength(50),
+                ])->columnspan(2)
+                ->columns(2),
+                Section::make('')
+                    ->schema([
+                        DatePicker::make('date_reversal')
+                            ->label('Date Reversal'),
+                        DatePicker::make('invoice_date_received')
+                            ->label('Date Received'),
+                        DatePicker::make('invoice_date_approved')
+                                ->label('Date Approved (RCA)')
+                                ->placeholder('Business Unit'),
+                    ])->columnspan(1),
+                Section::make('Invoice Details')
+                        ->schema([
+                            TextInput::make('invoice_posting_amount')
+                                ->label('Posted Amount')
+                                ->prefix('₱')
+                                ->numeric()
+                                ->minValue(1)
+                                ->placeholder('Posted Amount')
+                                ->inputMode('decimal')
+                                ->columnSpan(2),
+                            DatePicker::make('invoice_posting_date')
+                                ->label('Posting Date')
+                                ->columnSpan(1),
+                                FileUpload::make('invoice_attachment')
+                                ->label('Attachments')
+                                ->deletable(true)
+                                ->multiple()
+                                ->minFiles(0)
+                                ->reorderable()
+                                ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                                //Storage Setting
+                                ->preserveFilenames()
+                                ->previewable()
+                                ->maxSize(100000) //100MB
+                                ->disk('local')
+                                ->directory('Invoice_Attachments')
+                                ->visibility('public')
+                                ->downloadable()
+                                ->openable()
+                                ->columnSpan(2)
+                                ->deletable()
+                                // #IMAGE Settings
+                                // ->image()
+                                // ->imageEditor()
+                                // ->imageResizeMode('force')
+                                // ->imageCropAspectRatio('8:5')
+                                // ->imageResizeTargetWidth('1920')
+                                // ->imageResizeTargetHeight('1080')
+                                // ->imageEditorViewportWidth('1920')
+                                // ->imageEditorViewportHeight('1080'),
+                                ,
+                            DatePicker::make('invoice_date_forwarded')
+                                ->label('Date Forwarded to Client')
+                                ->columnSpan(1),
+                        ])->columns(3),
         ])->columns(3);
     }
 
@@ -333,5 +476,5 @@ class CollectionResource extends Resource
         ];
     }
 
-    
+
 }

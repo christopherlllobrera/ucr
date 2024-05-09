@@ -140,14 +140,30 @@ class InvoicerelationRelationManager extends RelationManager
                     ->label('Accounting Document')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('gr_amount')
+                    ->label('GR Amount')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('pojo_no')
+                    ->label('PO/JO No.')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('billing_statement')
                     ->label('Billing Statement')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('post_amount')
+                Tables\Columns\TextColumn::make('invoice_posting_amount')
                     ->label('Posted Amount')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('invoice_posting_date')
+                    ->label('Posting Date')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

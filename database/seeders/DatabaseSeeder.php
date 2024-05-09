@@ -6,6 +6,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,11 +23,19 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        DB::table('users')->insert([
+        $user = User::factory()->create([
             'name' => 'John Doe',
             'email' => 'john.doe@example.com',
             'password' => Hash::make('secretpassword'),
             'email_verified_at' => now(),
         ]);
+        $roles = ['admin', 'user'];
+
+            foreach ($roles as $roleName) {
+            $role = Role::create(['name' => $roleName]);
+            $user->assignRole($role);
+        }
+
+        $this->call(AccrualSeeder::class);
     }
 }

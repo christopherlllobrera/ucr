@@ -10,6 +10,8 @@ class collection extends Model
     use HasFactory;
     protected $fillable = [
         'ucr_ref_id',
+        'draft_bill_no',
+        'reversal_doc',
     ];
     public function accruals()
     {
@@ -22,5 +24,7 @@ class collection extends Model
     public function draftbills(){
         return $this->belongsTo(draftbilldetails::class, 'draftbill_no');
     }
-
+    public function invoice(){
+        return $this->belongsTo(invoicedetails::class, 'reversal_doc');
+    }
 }

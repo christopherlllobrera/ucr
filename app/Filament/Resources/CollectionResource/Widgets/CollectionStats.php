@@ -4,6 +4,8 @@ namespace App\Filament\Resources\CollectionResource\Widgets;
 
 use App\Models\accrual;
 use App\Models\collection;
+use App\Models\invoicedetails;
+use Illuminate\Support\Number;
 use App\Models\collectiondetails;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -15,27 +17,35 @@ class CollectionStats extends BaseWidget
     protected static bool $isLazy = false;
     protected function getStats(): array
     {
+        $formatNumber = function (int $number): string {
+            if ($number < 1000) {
+                return (string) Number::format($number, 0);
+            }
+
+            if ($number < 1000000) {
+                return Number::format($number / 1000, 2) . 'K';
+            }
+            if($number < 1000000000){
+                return Number::format($number / 1000000, 2) . 'M';
+            }
+            return Number::format($number / 1000000000, 2) . 'B';
+        };
         return [
             Stat::make('Collected Created', collectiondetails::count())
                 ->description('Total Collected created')
-                ->descriptionIcon('heroicon-o-wallet', IconPosition::Before)
-                ->chart([
-                    'labels' => collectiondetails::all()->pluck('created_at')->map(fn ($date) => $date->format('M d'))->toArray(),
-                    'values' => collectiondetails::all()->pluck('amount_collected')->toArray(),
-                ])
-                ->color('success'),
-            Stat::make('Total Amount Collected', collectiondetails::sum('amount_collected'))
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
+                ->color('success')
+                ->chart([1, 100, 500, 800, 900, 1000, collectiondetails::count()]),
+                Stat::make('Total GR Amount', '₱' . $formatNumber(collectiondetails::sum('amount_collected')))
                 ->description('Total amount collected')
                 ->descriptionIcon('heroicon-o-wallet', IconPosition::Before)
-                ->chart([
-                    'labels' => collectiondetails::all()->pluck('created_at')->map(fn ($date) => $date->format('M d'))->toArray(),
-                    'values' => collectiondetails::all()->pluck('amount_collected')->toArray(),
-                ])
-                ->color('primary'),
-            Stat::make('Accruals Created', accrual::count())
+                ->color('success')
+                ->chart([1, 100, collectiondetails::sum('amount_collected')]),
+                Stat::make('Invoice Created', invoicedetails::count())
                 ->description('Total Accrual created')
-                ->descriptionIcon('heroicon-o-banknotes', IconPosition::Before)
-                ->color('info'),
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
+                ->color('success')
+                ->chart([1, 10, invoicedetails::count()]),
         ];
     }
 }
