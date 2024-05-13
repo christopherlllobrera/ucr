@@ -50,6 +50,7 @@ class MliPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                //Widgets\
                 Widgets\AccountWidget::class,
                     UCRStats::class,
                     //UCRTable::class,
