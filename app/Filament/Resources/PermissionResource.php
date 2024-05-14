@@ -41,6 +41,9 @@ class PermissionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated([10, 25, 50, 100,])
+            ->emptyStateHeading('No Permission yet')
+            ->emptyStateDescription('Once you create your first permission, it will appear here.')
             ->columns([
                 TextColumn::make('name')
 

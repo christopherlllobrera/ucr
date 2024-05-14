@@ -10,6 +10,7 @@ class draftbill extends Model
     use HasFactory;
     protected $fillable = [
         'ucr_ref_id',
+        'draftbill_no',
     ];
     public function accruals()
     {

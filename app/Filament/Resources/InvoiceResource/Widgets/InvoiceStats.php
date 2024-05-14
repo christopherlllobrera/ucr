@@ -36,14 +36,14 @@ class InvoiceStats extends BaseWidget
             ->chart([1, 100, invoicedetails::count()]),
             Stat::make('Total GR Amount', '₱' . $formatNumber(invoicedetails::sum('gr_amount')))
                 ->description('Total GR amount')
-                ->descriptionIcon('heroicon-o-inbox-stack', IconPosition::Before)
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->chart([1, 100000, invoicedetails::sum('gr_amount')])
-                ->color('success'),
+                ->color('primary'),
                 Stat::make('Total Posted Amount', '₱' . $formatNumber(invoicedetails::sum('invoice_posting_amount')))
                 ->description('Total posted amount')
-                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::Before)
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->chart([1, 100000, invoicedetails::sum('invoice_posting_amount')])
-                ->color('success'),
+                ->color('primary'),
         ];
     }
 }

@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('wbs_no')->nullable();
             $table->string('month')->nullable();
             $table->double('accrual_amount')->nullable();
-            $table->string('accruals_attachment')->nullable();
+            $table->longText('accruals_attachment')->nullable();
             $table->timestamps();
         });
     }

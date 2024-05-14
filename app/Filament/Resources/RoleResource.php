@@ -44,15 +44,16 @@ class RoleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->paginated([10, 25, 50, 100,])
+            ->emptyStateHeading('No Role yet')
+            ->emptyStateDescription('Once you create your first role, it will appear here.')
             ->columns([
                 TextColumn::make('name')
-
             ])
             ->filters([
                 //
             ])
             ->actions([
-
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])

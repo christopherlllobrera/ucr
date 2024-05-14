@@ -46,6 +46,20 @@ class DraftRelationManager extends RelationManager
                             ->placeholder('Draftbill Particular'),
                         FileUpload::make('bill_attachment')
                             ->label('Attachment')
+                            ->deletable(true)
+                            ->multiple()
+                            ->minFiles(0)
+                            ->reorderable()
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('local')
+                            ->directory('Accrual_Attachments')
+                            ->visibility('public')
+                            ->downloadable()
+                            ->openable()
                             ->columnSpanFull(),
 
                     ])->columnspan(2)->columns(2),
