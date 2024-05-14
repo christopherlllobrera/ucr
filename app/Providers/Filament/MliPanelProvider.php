@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
+use App\Filament\Resources\DashboardResource\Widgets\RevenueAccrualsChart;
 use App\Filament\Resources\DashboardResource\Widgets\UCRStats;
 use App\Filament\Resources\DashboardResource\Widgets\UCRTable;
 use App\Models\accrual;
@@ -22,6 +23,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\FontProviders\GoogleFontProvider;
+use Leandrocfe\FilamentApexCharts\FilamentApexChartsPlugin;
 
 class MliPanelProvider extends PanelProvider
 {
@@ -53,9 +55,12 @@ class MliPanelProvider extends PanelProvider
                 //Widgets\
                 Widgets\AccountWidget::class,
                     UCRStats::class,
-                    //UCRTable::class,
+                    UCRTable::class,
+                    RevenueAccrualsChart::class,
             ])
-
+            ->plugins([
+                FilamentApexChartsPlugin::make()
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

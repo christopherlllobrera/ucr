@@ -250,6 +250,7 @@ class DraftbillResource extends Resource
         return $table
             ->emptyStateHeading('No Draft Bill yet')
             ->emptyStateDescription('Once you create your first draft bill it will appear here.')
+            ->paginated([10, 25, 50, 100,])
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')
@@ -316,5 +317,5 @@ class DraftbillResource extends Resource
         ];
     }
 
-    
+
 }

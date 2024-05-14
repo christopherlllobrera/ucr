@@ -6,6 +6,8 @@ use Filament\Actions;
 use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\AccrualsResource;
+use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListAccruals extends ListRecords
 {
@@ -25,6 +27,10 @@ class ListAccruals extends ListRecords
             AccrualStats::class,
         ];
     }
+    protected function paginateTableQuery(Builder $query): CursorPaginator
+{
+    return $query->cursorPaginate(($this->getTableRecordsPerPage() === 'all') ? $query->count() : $this->getTableRecordsPerPage());
+}
 
 
 }

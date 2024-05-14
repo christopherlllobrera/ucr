@@ -181,8 +181,7 @@ class InvoiceResource extends Resource
                             'Transport Services' => 'Transport Services',
                             'Warehouse Services' => 'Warehouse Services',
                             'General Services' => 'General Services',
-                            'Cons & Reno Services' => 'Cons & Reno Services',
-                        ]),
+                            'Cons & Reno Services' => 'Cons & Reno Services',]),
                     Select::make('contract_type')
                         ->label('Contract Type')
                         ->reactive()
@@ -199,6 +198,7 @@ class InvoiceResource extends Resource
                             ->options(fn(Get $get): Collection => draftbill::query()
                                 ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
                                 ->pluck('ucr_ref_id', 'id'))
+                            //->relationship('draftbills', 'draftbill_no')
                             ->required()
                             ->unique(ignoreRecord:true)
                             ->validationMessages([
@@ -238,7 +238,7 @@ class InvoiceResource extends Resource
                                     $set('bill_date_approved', $draft->bill_date_approved);
                                 }
                             })
-                            ->disabled('urc_ref_id' === null)
+                            // ->disabled('urc_ref_id' === null)
                             ->native(false)
                             ->disabledOn('edit'),
                         TextInput::make('draftbill_amount')
@@ -275,6 +275,7 @@ class InvoiceResource extends Resource
         return $table
             ->emptyStateHeading('No Invoice yet')
             ->emptyStateDescription('Once you create your first invoice, it will appear here.')
+            ->paginated([10, 25, 50, 100,])
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID'),

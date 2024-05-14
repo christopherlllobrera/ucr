@@ -417,6 +417,7 @@ class CollectionResource extends Resource
         return $table
             ->emptyStateHeading('No Collection yet')
             ->emptyStateDescription('Once you create your first collection, it will appear here.')
+            ->paginated([10, 25, 50, 100,])
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')

@@ -35,17 +35,17 @@ class CollectionStats extends BaseWidget
                 ->description('Total Collected created')
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('success')
-                ->chart([1, 100, 500, 800, 900, 1000, collectiondetails::count()]),
+                ->chart([1, 2, collectiondetails::count()]),
                 Stat::make('Total GR Amount', '₱' . $formatNumber(collectiondetails::sum('amount_collected')))
                 ->description('Total amount collected')
-                ->descriptionIcon('heroicon-o-wallet', IconPosition::Before)
-                ->color('success')
-                ->chart([1, 100, collectiondetails::sum('amount_collected')]),
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
+                ->color('primary')
+                ->chart([1, 2, collectiondetails::sum('amount_collected')]),
                 Stat::make('Invoice Created', invoicedetails::count())
                 ->description('Total Accrual created')
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('success')
-                ->chart([1, 10, invoicedetails::count()]),
+                ->chart([1, 2, invoicedetails::count()]),
         ];
     }
 }

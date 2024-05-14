@@ -134,7 +134,7 @@ class AccrualsResource extends Resource
                                 ->label('Contract Type')
                                 ->disabledOn(Pages\EditAccrualsParkDoc::class)
                                 ->options([
-                                    'LCSP' => 'LCSP',
+                                    'LSCP' => 'LCSP',
                                     'OOS' => 'OOS',
                                 ]),
                     ])->columnspan(1),
@@ -150,20 +150,21 @@ class AccrualsResource extends Resource
                                 ->placeholder('Accrual Amount'),
                         FileUpload::make('accruals_attachment')
                                 ->label('Attachments')
-                                ->deletable(true)
                                 ->multiple()
                                 ->minFiles(0)
-                                ->reorderable()
                                 ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                                 //Storage Setting
                                 ->preserveFilenames()
                                 ->previewable()
                                 ->maxSize(100000) //100MB
                                 ->disk('local')
-                                ->directory('Invoice_Attachments')
+                                ->directory('Accrual_Attachments')
                                 ->visibility('public')
+                                ->deletable(true)
                                 ->downloadable()
                                 ->openable()
+                                ->reorderable()
+                                ->uploadingMessage('Uploading Accrual attachment...')
                                 // #IMAGE Settings
                                 // ->image()
                                 // ->imageEditor()
@@ -192,6 +193,7 @@ class AccrualsResource extends Resource
         return $table
             ->emptyStateHeading('No Accruals yet')
             ->emptyStateDescription('Once you create your first accrual, it will appear here.')
+            ->paginated([10, 25, 50, 100,])
             ->columns([
                 TextColumn::make('ucr_ref_id')
                     ->label('UCR Reference ID')
