@@ -27,10 +27,10 @@ class ListAccruals extends ListRecords
             AccrualStats::class,
         ];
     }
-    protected function paginateTableQuery(Builder $query): CursorPaginator
-{
-    return $query->cursorPaginate(($this->getTableRecordsPerPage() === 'all') ? $query->count() : $this->getTableRecordsPerPage());
-}
+    // protected function paginateTableQuery(Builder $query): CursorPaginator
+    // {
+    //     return $query->cursorPaginate(($this->getTableRecordsPerPage() === 'all') ? $query->count() : $this->getTableRecordsPerPage());
+    // }
 
 
 }

@@ -17,29 +17,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        $user = User::factory()->create([
-            'name' => 'John Doe',
-            'email' => 'john.doe@example.com',
-            'password' => Hash::make('secretpassword'),
-            'email_verified_at' => now(),
-        ]);
-        $roles = ['admin', 'user'];
-
-            foreach ($roles as $roleName) {
-            $role = Role::create(['name' => $roleName]);
-            $user->assignRole($role);
-        }
 
         $this->call(AccrualSeeder::class);
         $this->call(DraftbillSeeder::class);
         $this->call(DraftbilldetailSeeder::class);
         $this->call(DraftbillrelationSeeder::class);
+        $this->call(InvoiceSeeder::class);
+        $this->call(InvoicedetailSeeder::class);
+        $this->call(InvoicerelationSeeder::class);
+        $this->call(PermissionSeeder::class);
     }
 }

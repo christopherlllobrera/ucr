@@ -29,6 +29,7 @@ use Illuminate\Support\Collection as BaseCollection;
 use App\Filament\Resources\CollectionResource\RelationManagers;
 use App\Filament\Resources\CollectionResource\Widgets\CollectionStats;
 use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
+use Filament\Forms\Components\Textarea;
 
 class CollectionResource extends Resource
 {
@@ -47,65 +48,64 @@ class CollectionResource extends Resource
             ->description('Please select UCR Reference ID to auto-fill the fields.')
             ->schema([
                 Select::make('ucr_ref_id')
-                ->relationship('accruals', 'ucr_ref_id')
-                ->required()
-                ->searchable()
-                ->preload()
-                ->live()
-                ->reactive()
-                ->columnSpan(1)
-                ->label('UCR Reference ID')
-                ->afterStateUpdated(function (Get $get, Set $set,){
-                    $accrual = $get('ucr_ref_id');
-                    if ($accrual){
-                        $accrual = accrual::find($accrual);
-                        $set('client_name', $accrual->client_name);
-                        $set('person_in_charge', $accrual->person_in_charge);
-                        $set('wbs_no', $accrual->wbs_no);
-                        $set('particulars', $accrual->particulars);
-                        $set('period_started', $accrual->period_started);
-                        $set('period_ended', $accrual->period_ended);
-                        $set('month', $accrual->month);
-                        $set('business_unit', $accrual->business_unit);
-                        $set('contract_type', $accrual->contract_type);
-                        $set('accrual_amount', $accrual->accrual_amount);
-                    }
-                    else {
-                        $set('client_name', null);
-                        $set('person_in_charge', null);
-                        $set('wbs_no', null);
-                        $set('particulars', null);
-                        $set('period_started', null);
-                        $set('period_ended', null);
-                        $set('month', null);
-                        $set('business_unit', null);
-                        $set('contract_type', null);
-                        $set('accrual_amount', null);
-                        $set('draftbill_no', null);
-                        $set('draftbill_amount', null);
-                        $set('draftbill_particular', null);
-                        $set('bill_date_created', null);
-                        $set('bill_date_submitted', null);
-                        $set('bill_date_approved', null);
-                    }
-
-                })
-                ->AfterStateHydrated(function (Get $get, Set $set,){
-                    if ($get('ucr_ref_id' )) {
-                        $accrual = accrual::find($get('ucr_ref_id'));
-                        $set('client_name', $accrual->client_name);
-                        $set('person_in_charge', $accrual->person_in_charge);
-                        $set('wbs_no', $accrual->wbs_no);
-                        $set('particulars', $accrual->particulars);
-                        $set('period_started', $accrual->period_started);
-                        $set('period_ended', $accrual->period_ended);
-                        $set('month', $accrual->month);
-                        $set('business_unit', $accrual->business_unit);
-                        $set('contract_type', $accrual->contract_type);
-                        $set('accrual_amount', $accrual->accrual_amount);
-                    }
-                })
-                ->disabledOn('edit'),
+                    ->relationship('accruals', 'ucr_ref_id')
+                    ->required()
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->reactive()
+                    ->columnSpan(1)
+                    ->label('UCR Reference ID')
+                    ->afterStateUpdated(function (Get $get, Set $set,){
+                        $accrual = $get('ucr_ref_id');
+                        if ($accrual){
+                            $accrual = accrual::find($accrual);
+                            $set('client_name', $accrual->client_name);
+                            $set('person_in_charge', $accrual->person_in_charge);
+                            $set('wbs_no', $accrual->wbs_no);
+                            $set('particulars', $accrual->particulars);
+                            $set('period_started', $accrual->period_started);
+                            $set('period_ended', $accrual->period_ended);
+                            $set('month', $accrual->month);
+                            $set('business_unit', $accrual->business_unit);
+                            $set('contract_type', $accrual->contract_type);
+                            $set('accrual_amount', $accrual->accrual_amount);
+                        }
+                        else {
+                            $set('client_name', null);
+                            $set('person_in_charge', null);
+                            $set('wbs_no', null);
+                            $set('particulars', null);
+                            $set('period_started', null);
+                            $set('period_ended', null);
+                            $set('month', null);
+                            $set('business_unit', null);
+                            $set('contract_type', null);
+                            $set('accrual_amount', null);
+                            $set('draftbill_no', null);
+                            $set('draftbill_amount', null);
+                            $set('draftbill_particular', null);
+                            $set('bill_date_created', null);
+                            $set('bill_date_submitted', null);
+                            $set('bill_date_approved', null);
+                        }
+                    })
+                    ->AfterStateHydrated(function (Get $get, Set $set,){
+                        if ($get('ucr_ref_id' )) {
+                            $accrual = accrual::find($get('ucr_ref_id'));
+                            $set('client_name', $accrual->client_name);
+                            $set('person_in_charge', $accrual->person_in_charge);
+                            $set('wbs_no', $accrual->wbs_no);
+                            $set('particulars', $accrual->particulars);
+                            $set('period_started', $accrual->period_started);
+                            $set('period_ended', $accrual->period_ended);
+                            $set('month', $accrual->month);
+                            $set('business_unit', $accrual->business_unit);
+                            $set('contract_type', $accrual->contract_type);
+                            $set('accrual_amount', $accrual->accrual_amount);
+                        }
+                    })
+                    ->disabledOn('edit'),
                 TextInput::make('client_name')
                     ->label('Client Name')
                     ->maxLength(50)
@@ -125,10 +125,8 @@ class CollectionResource extends Resource
                     ->reactive()
                     //->placeholder('WBS No.')
                     ->readOnly(),
-
-                TextInput::make('particulars')
+                TextArea::make('particulars')
                     ->label('Particulars')
-                    ->maxLength(50)
                     ->reactive()
                     //->placeholder('Particulars')
                     ->columnSpanFull()
@@ -188,7 +186,7 @@ class CollectionResource extends Resource
                         ->label('Contract Type')
                         ->reactive()
                         ->options([
-                            'LCSP' => 'LCSP',
+                            'LSCP' => 'LSCP',
                             'OOS' => 'OOS',
                         ])
                         ->disabled(),
@@ -197,9 +195,10 @@ class CollectionResource extends Resource
                         ->description('Please select draftbill no. to auto-fill the fields.')
                     ->schema([
                         Select::make('draftbill_no')
-                            ->options(fn(Get $get): BaseCollection => draftbill::query()
-                                ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
-                                ->pluck('ucr_ref_id', 'id'))
+                            // ->options(fn(Get $get): BaseCollection => draftbill::query()
+                            //     ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
+                            //     ->pluck('ucr_ref_id', 'id'))
+                            ->relationship('draftbills', 'draftbill_no')
                             ->required()
                             ->unique(ignoreRecord:true)
                             ->validationMessages([
@@ -251,7 +250,7 @@ class CollectionResource extends Resource
                             ->minValue(1)
                             ->columnSpan(2)
                             ->readOnly(),
-                        TextInput::make('draftbill_particular')
+                        TextArea::make('draftbill_particular')
                             ->label('Draftbill Particular')
                             ->columnSpan(3)
                             ->readOnly(),
@@ -268,13 +267,13 @@ class CollectionResource extends Resource
                             ->label('Date Approved')
                             ->readOnly(),
                          ])->columnspan(1),
-
-                Section::make()
+                Section::make('Invoice Details')
                 ->schema([
                 Select::make('reversal_doc')
-                    ->options(fn(Get $get): BaseCollection => invoice::query()
-                    ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
-                    ->pluck('draftbill_no', 'id'))
+                    // ->options(fn(Get $get): BaseCollection => invoice::query()
+                    // ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
+                    // ->pluck('draftbill_no', 'id'))
+                    ->relationship('invoices', 'reversal_doc')
                     ->required()
                     ->unique(ignoreRecord:true)
                     ->validationMessages([
@@ -317,98 +316,74 @@ class CollectionResource extends Resource
                             $set('invoice_date_forwarded', null);
                         }
                     })
-                    // ->AfterStateHydrated(function (Get $get, Set $set,){
-                    //     if ($get('reversal_doc')) {
-                    //         $invoice = invoicedetails::find($get('reverse_doc'));
-                    //         $set('gr_amount', $invoice->gr_amount);
-                    //         $set('date_reversal', $invoice->date_reversal);
-                    //         $set('accounting_doc', $invoice->accounting_doc);
-                    //         $set('invoice_date_received', $invoice->invoice_date_received);
-                    //         $set('pojo_no', $invoice->pojo_no);
-                    //         $set('gr_no_meralco', $invoice->gr_no_meralco);
-                    //         $set('billing_statement', $invoice->billing_statement);
-                    //         $set('invoice_date_approved', $invoice->invoice_date_approved);
-                    //         $set('invoice_posting_date', $invoice->invoice_posting_date);
-                    //         $set('invoice_posting_amount', $invoice->invoice_posting_amount);
-                    //         $set('invoice_date_forwarded', $invoice->invoice_date_forwarded);
-                    //     }
-                    // })
+                    ->AfterStateHydrated(function (Get $get, Set $set,){
+                        if ($get('reversal_doc')) {
+                            $invoice = invoicedetails::find($get('reversal_doc'));
+                            $set('gr_amount', $invoice->gr_amount);
+                            $set('date_reversal', $invoice->date_reversal);
+                            $set('accounting_doc', $invoice->accounting_doc);
+                            $set('invoice_date_received', $invoice->invoice_date_received);
+                            $set('pojo_no', $invoice->pojo_no);
+                            $set('gr_no_meralco', $invoice->gr_no_meralco);
+                            $set('billing_statement', $invoice->billing_statement);
+                            $set('invoice_date_approved', $invoice->invoice_date_approved);
+                            $set('invoice_posting_date', $invoice->invoice_posting_date);
+                            $set('invoice_posting_amount', $invoice->invoice_posting_amount);
+                            $set('invoice_date_forwarded', $invoice->invoice_date_forwarded);
+                        }
+                    })
                     ->native(false)
                     ->disabledOn('edit'),
                 TextInput::make('gr_amount')
                     ->label('GR Amount')
                     ->prefix('₱')
                     ->numeric()
+                    ->readOnly()
                     ->inputMode('decimal')
                     ->minValue(1),
                 TextInput::make('accounting_doc')
                     ->label('Accounting Document')
+                    ->readOnly()
                     ->maxLength(32),
                 TextInput::make('pojo_no')
+                    ->readOnly()
                     ->label('PO/JO No.'),
                 TextInput::make('gr_no_meralco')
                     ->label('GR No.  created by Meralco')
+                    ->readOnly()
                     ->maxLength(50),
                 TextInput::make('billing_statement')
                     ->label('Billing Statement No.')
+                    ->readOnly()
                     ->maxLength(50),
+                TextInput::make('invoice_posting_amount')
+                    ->label('Posted Amount')
+                    ->prefix('₱')
+                    ->numeric()
+                    ->minValue(1)
+                    ->inputMode('decimal')
+                    ->disabled()
+                    ->columnSpan(2),
                 ])->columnspan(2)
                 ->columns(2),
                 Section::make('')
                     ->schema([
                         DatePicker::make('date_reversal')
-                            ->label('Date Reversal'),
+                            ->label('Date Reversal')
+                            ->disabled(),
                         DatePicker::make('invoice_date_received')
-                            ->label('Date Received'),
+                            ->label('Date Received')
+                            ->disabled(),
                         DatePicker::make('invoice_date_approved')
-                                ->label('Date Approved (RCA)')
-                                ->placeholder('Business Unit'),
+                            ->label('Date Approved (RCA)')
+                            ->disabled(),
+                        DatePicker::make('invoice_date_forwarded')
+                            ->label('Date Forwarded to Client')
+                            ->columnSpan(1),
+                        DatePicker::make('invoice_posting_date')
+                            ->label('Posting Date')
+                            ->columnSpan(1),
                     ])->columnspan(1),
-                Section::make('Invoice Details')
-                        ->schema([
-                            TextInput::make('invoice_posting_amount')
-                                ->label('Posted Amount')
-                                ->prefix('₱')
-                                ->numeric()
-                                ->minValue(1)
-                                ->placeholder('Posted Amount')
-                                ->inputMode('decimal')
-                                ->columnSpan(2),
-                            DatePicker::make('invoice_posting_date')
-                                ->label('Posting Date')
-                                ->columnSpan(1),
-                                FileUpload::make('invoice_attachment')
-                                ->label('Attachments')
-                                ->deletable(true)
-                                ->multiple()
-                                ->minFiles(0)
-                                ->reorderable()
-                                ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
-                                //Storage Setting
-                                ->preserveFilenames()
-                                ->previewable()
-                                ->maxSize(100000) //100MB
-                                ->disk('local')
-                                ->directory('Invoice_Attachments')
-                                ->visibility('public')
-                                ->downloadable()
-                                ->openable()
-                                ->columnSpan(2)
-                                ->deletable()
-                                // #IMAGE Settings
-                                // ->image()
-                                // ->imageEditor()
-                                // ->imageResizeMode('force')
-                                // ->imageCropAspectRatio('8:5')
-                                // ->imageResizeTargetWidth('1920')
-                                // ->imageResizeTargetHeight('1080')
-                                // ->imageEditorViewportWidth('1920')
-                                // ->imageEditorViewportHeight('1080'),
-                                ,
-                            DatePicker::make('invoice_date_forwarded')
-                                ->label('Date Forwarded to Client')
-                                ->columnSpan(1),
-                        ])->columns(3),
         ])->columns(3);
     }
 
@@ -417,7 +392,7 @@ class CollectionResource extends Resource
         return $table
             ->emptyStateHeading('No Collection yet')
             ->emptyStateDescription('Once you create your first collection, it will appear here.')
-            ->paginated([10, 25, 50, 100,])
+            ->paginated([10, 25, 50])
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')
@@ -449,15 +424,15 @@ class CollectionResource extends Resource
                 //     ->sortable(),
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

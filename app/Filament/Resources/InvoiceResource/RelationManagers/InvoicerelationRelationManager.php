@@ -30,7 +30,7 @@ class InvoicerelationRelationManager extends RelationManager
                 ->schema([
                 TextInput::make('reversal_doc')
                     ->label('Reversal Document')
-                    ->placeholder('Request ID')
+                    ->placeholder('Reversal Document')
                     ->maxLength(32),
                 TextInput::make('gr_amount')
                     ->label('GR Amount')
@@ -142,6 +142,11 @@ class InvoicerelationRelationManager extends RelationManager
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gr_amount')
                     ->label('GR Amount')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('gr_no_meralco')
+                    ->label('GR No. Created by Meralco')
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),

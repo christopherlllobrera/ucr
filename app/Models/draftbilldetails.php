@@ -21,4 +21,8 @@ class draftbilldetails extends Model
     protected $casts = [
         'bill_attachment' => 'array',
     ];
+    public function accruals()
+    {
+        return $this->belongsTo(accrual::class, 'ucr_ref_id');
+    }
 }

@@ -16,7 +16,7 @@ class DraftbilldetailSeeder extends Seeder
     {
         DB::disableQueryLog();
         LazyCollection::make(function () {
-            $file = fopen(public_path('draftbilldetails_1.csv'), 'r');
+            $file = fopen(public_path('draftbilldetails.csv'), 'r');
             while (($line = fgetcsv($file, 4096)) !== false) {
                 $dataString = implode(',', $line);
                 $row = explode(',', $dataString);

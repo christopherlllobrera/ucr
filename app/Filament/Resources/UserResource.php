@@ -25,7 +25,6 @@ use App\Filament\Resources\UserResource\RelationManagers;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'User Management';
@@ -36,31 +35,29 @@ class UserResource extends Resource
             ->schema([
                 Section::make([
                     TextInput::make('name')
-                    ->required()
-                    ->columnSpanFull()
-                    //->placeholder('First Name, middle Initial , last Name')
-                    ,
+                        ->required()
+                        ->columnSpanFull(),
                     TextInput::make('email')
-                    ->email()->required()->unique(ignoreRecord: true),
+                        ->email()
+                        ->required()
+                        ->unique(ignoreRecord: true),
                     TextInput::make('password')
-                    ->password()->required()
-                    ->dehydrated(fn($state)=> Hash::make($state))
-                    ->required()
-                    ->minLength(8)
-                    ->revealable()
-                    ->maxLength(255),
-
-                ]) ->columns(2),
-
+                        ->password()->required()
+                        ->dehydrated(fn($state)=> Hash::make($state))
+                        ->required()
+                        ->minLength(8)
+                        ->revealable()
+                        ->maxLength(255),
+                ])->columns(2),
                 Section::make([
                     Select::make('Roles')
-                    ->multiple()
-                    ->relationship('roles', 'name')
-                    ->preload(),
+                        ->multiple()
+                        ->relationship('roles', 'name')
+                        ->preload(),
                     Select::make('Permission')
-                    ->multiple()
-                    ->relationship('permissions', 'name')
-                    ->preload(),
+                        ->multiple()
+                        ->relationship('permissions', 'name')
+                        ->preload(),
                 ]) ->columns(2),
             ]);
     }
@@ -70,17 +67,17 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                        ->label('Name')
-                        ->icon('heroicon-m-user')
-                        ->searchable(),
-                        TextColumn::make('email')
-                        ->icon('heroicon-m-envelope')
-                        ->label('Email')
-                        ->searchable(),
-                        TextColumn::make('roles.name')
-                        ->label('Roles')
-                        ->icon('heroicon-m-shield-check')
-                        ->searchable(),
+                    ->label('Name')
+                    ->icon('heroicon-m-user')
+                    ->searchable(),
+                TextColumn::make('email')
+                    ->icon('heroicon-m-envelope')
+                    ->label('Email')
+                    ->searchable(),
+                TextColumn::make('roles.name')
+                    ->label('Roles')
+                    ->icon('heroicon-m-shield-check')
+                    ->searchable(),
                 Panel::make([
                     Split::make([
                         TextColumn::make('permissions.name')
@@ -89,7 +86,6 @@ class UserResource extends Resource
                         ->searchable(),
                     ])
                 ])->collapsed(true)
-
             ])
             ->filters([
                 //
@@ -106,14 +102,12 @@ class UserResource extends Resource
             // ])
             ->defaultPaginationPageOption(25);
     }
-
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [

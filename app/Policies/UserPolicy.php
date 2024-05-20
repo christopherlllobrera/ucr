@@ -3,20 +3,20 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Activitylog;
 use Illuminate\Auth\Access\Response;
 
-class ActivityPolicy
+class UserPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
-            return true;
-        }
-        return false;
+        return $user->hasRole('admin');
+        // if ($user->hasPermissionTo('create-project')) {
+        //     return true;
+        // }
+        // return false;
     }
 
     /**
@@ -24,7 +24,8 @@ class ActivityPolicy
      */
     public function view(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        //return $user->hasRole('admin');
+        if ($user->hasPermissionTo('view-user')) {
             return true;
         }
         return false;
@@ -35,7 +36,8 @@ class ActivityPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        //return $user->hasRole('admin');
+        if ($user->hasPermissionTo('create-user')) {
             return true;
         }
         return false;
@@ -46,7 +48,8 @@ class ActivityPolicy
      */
     public function update(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        //return $user->hasRole('admin');
+        if ($user->hasPermissionTo('update-user')) {
             return true;
         }
         return false;
@@ -57,7 +60,8 @@ class ActivityPolicy
      */
     public function delete(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        //return $user->hasRole('admin'); 
+        if ($user->hasPermissionTo('delete-user')) {
             return true;
         }
         return false;
@@ -68,10 +72,7 @@ class ActivityPolicy
      */
     public function restore(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
-            return true;
-        }
-        return false;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -79,9 +80,6 @@ class ActivityPolicy
      */
     public function forceDelete(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
-            return true;
-        }
-        return false;
+        return $user->hasRole('admin');
     }
 }

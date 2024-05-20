@@ -34,6 +34,7 @@ class MliPanelProvider extends PanelProvider
             ->id('mli')
             ->path('mli')
             ->login()
+            ->passwordReset()
             ->colors(['primary' => Color::Orange,])
             ->favicon('images/favicon.ico')
             ->font('Inter', provider: GoogleFontProvider::class)
@@ -55,8 +56,8 @@ class MliPanelProvider extends PanelProvider
                 //Widgets\
                 Widgets\AccountWidget::class,
                     UCRStats::class,
-                    UCRTable::class,
-                    RevenueAccrualsChart::class,
+                    // UCRTable::class,
+                    // RevenueAccrualsChart::class,
             ])
             ->plugins([
                 FilamentApexChartsPlugin::make()

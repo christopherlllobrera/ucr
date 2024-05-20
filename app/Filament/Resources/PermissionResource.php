@@ -33,11 +33,8 @@ class PermissionResource extends Resource
                 ->maxLength(255)
                 ->required()
                 ->unique(ignoreRecord: true),
-
         ]);
-
     }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -46,7 +43,6 @@ class PermissionResource extends Resource
             ->emptyStateDescription('Once you create your first permission, it will appear here.')
             ->columns([
                 TextColumn::make('name')
-
             ])
             ->filters([
                 //
@@ -68,7 +64,6 @@ class PermissionResource extends Resource
             //
         ];
     }
-
     public static function getPages(): array
     {
         return [
