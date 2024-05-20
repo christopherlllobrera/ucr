@@ -20,7 +20,6 @@ use App\Filament\Resources\RoleResource\RelationManagers;
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationGroup = 'User Management';
@@ -30,14 +29,13 @@ class RoleResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
-                ->minLength(2)
-                ->maxLength(255)
-                ->unique(ignoreRecord: true),
-
+                    ->minLength(2)
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
                 Select::make('Permission')
-                ->multiple()
-                ->relationship('permissions', 'name')
-                ->preload(),
+                    ->multiple()
+                    ->relationship('permissions', 'name')
+                    ->preload(),
             ]);
     }
 

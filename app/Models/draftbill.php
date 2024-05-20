@@ -20,4 +20,8 @@ class draftbill extends Model
     {
         return $this->belongsToMany(draftbilldetails::class, 'draftbill_relation');
     }
+    public function draftbillno()
+    {
+        return $this->belongsTo(draftbilldetails::class, 'draftbill_no');
+    }
 }

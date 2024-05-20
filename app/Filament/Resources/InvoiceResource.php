@@ -26,24 +26,23 @@ use App\Filament\Resources\InvoiceResource\Widgets\InvoiceStats;
 use App\Models\draftbilldetails;
 use App\Models\draftbill;
 use Illuminate\Support\Collection;
+use Filament\Forms\Components\Textarea;
 
 
 class InvoiceResource extends Resource
 {
     protected static ?string $model = invoice::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
     protected static ?string $navigationLabel = 'Invoice';
     protected static ?int $navigationSort = 4;
     protected static ?string $breadcrumb = 'Invoice';
-
 
     public static function form(Form $form): Form
     {
         return $form
         ->schema([
             Section::make('Accruals Details')
-            ->description('Please select UCR Reference ID to auto-fill the fields.')
+                ->description('Please select UCR Reference ID to auto-fill the fields.')
             ->schema([
                 Select::make('ucr_ref_id')
                 ->relationship('accruals', 'ucr_ref_id')
@@ -87,7 +86,6 @@ class InvoiceResource extends Resource
                         $set('bill_date_submitted', null);
                         $set('bill_date_approved', null);
                     }
-
                 })
                 ->AfterStateHydrated(function (Get $get, Set $set,){
                     if ($get('ucr_ref_id' )) {
@@ -124,10 +122,8 @@ class InvoiceResource extends Resource
                     ->reactive()
                     //->placeholder('WBS No.')
                     ->readOnly(),
-
-                TextInput::make('particulars')
+                TextArea::make('particulars')
                     ->label('Particulars')
-                    ->maxLength(50)
                     ->reactive()
                     //->placeholder('Particulars')
                     ->columnSpanFull()
@@ -195,10 +191,10 @@ class InvoiceResource extends Resource
                         ->description('Please select draftbill no. to auto-fill the fields.')
                     ->schema([
                         Select::make('draftbill_no')
-                            ->options(fn(Get $get): Collection => draftbill::query()
-                                ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
-                                ->pluck('ucr_ref_id', 'id'))
-                            //->relationship('draftbills', 'draftbill_no')
+                            //  ->options(fn(Get $get): Collection => draftbill::query()
+                            //      ->where('ucr_ref_id', $get('draftbill_no'))->get()
+                            //      ->pluck('draftbill_no', 'id'))
+                            ->relationship('draftbills', 'draftbill_no')
                             ->required()
                             ->unique(ignoreRecord:true)
                             ->validationMessages([
@@ -238,7 +234,6 @@ class InvoiceResource extends Resource
                                     $set('bill_date_approved', $draft->bill_date_approved);
                                 }
                             })
-                            // ->disabled('urc_ref_id' === null)
                             ->native(false)
                             ->disabledOn('edit'),
                         TextInput::make('draftbill_amount')
@@ -250,7 +245,7 @@ class InvoiceResource extends Resource
                             ->minValue(1)
                             ->columnSpan(2)
                             ->readOnly(),
-                        TextInput::make('draftbill_particular')
+                        TextArea::make('draftbill_particular')
                             ->label('Draftbill Particular')
                             ->columnSpan(3)
                             ->readOnly(),
@@ -269,13 +264,12 @@ class InvoiceResource extends Resource
                          ])->columnspan(1),
         ])->columns(3);
     }
-
     public static function table(Table $table): Table
     {
         return $table
             ->emptyStateHeading('No Invoice yet')
             ->emptyStateDescription('Once you create your first invoice, it will appear here.')
-            ->paginated([10, 25, 50, 100,])
+            ->paginated([10, 25, 50])
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID'),
@@ -283,13 +277,13 @@ class InvoiceResource extends Resource
                     ->label('UCR Park Doc')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('draftbills.draftbill_no')
+                    ->label('Draftbill No.')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('accruals.accrual_amount')
                     ->label('Accrual Amount')
                     ->money('PHP')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('draftbills.draftbill_no')
-                    ->label('Draftbill No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('draftbills.draftbill_amount')
@@ -306,19 +300,17 @@ class InvoiceResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
-
     public static function getRelations(): array
     {
         return [
             InvoicerelationRelationManager::class,
         ];
     }
-
     public static function getPages(): array
     {
         return [
@@ -327,5 +319,4 @@ class InvoiceResource extends Resource
             'edit' => Pages\EditInvoice::route('/{record}/edit'),
         ];
     }
-
 }

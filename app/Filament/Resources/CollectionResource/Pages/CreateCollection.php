@@ -9,6 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCollection extends CreateRecord
 {
     protected static string $resource = CollectionResource::class;
+    protected static ?string $title = 'Create Collection';
+    protected static ?string $breadcrumb = 'Create';
     protected static bool $canCreateAnother = false;
 
     protected function getCreatedNotification(): ?Notification

@@ -6,7 +6,7 @@ use Filament\Forms;
 use Filament\Panel;
 use Filament\Tables;
 use NumberFormatter;
-use App\Models\Accrual;
+use App\Models\accrual;
 use Filament\Forms\Set;
 use Livewire\Component;
 use Filament\Forms\Form;
@@ -33,10 +33,13 @@ use App\Filament\Resources\AccrualsResource\RelationManagers;
 use App\Filament\Resources\AccrualsResource\Pages\UpdateAccruals;
 use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
 use App\Filament\Resources\AccrualsResource\Pages\EditAccrualsParkDoc;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
+
 
 class AccrualsResource extends Resource
 {
-    protected static ?string $model = Accrual::class;
+    protected static ?string $model = accrual::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?int $navigationSort = 1;
     protected static bool $softDelete = true;
@@ -50,22 +53,22 @@ class AccrualsResource extends Resource
                 ->schema([
                     TextInput::make('ucr_ref_id')
                     ->default(function() {
-                        $lastUcrRefId = Accrual::orderBy('ucr_ref_id', 'desc')->first()?->ucr_ref_id;
+                        $lastUcrRefId = accrual::orderBy('ucr_ref_id', 'desc')->first()?->ucr_ref_id;
                         if ($lastUcrRefId) {
                             // Extract the numeric part (assuming format "UCR-CE-xxxxxx")
                             $lastNumber = (int) Str::afterLast($lastUcrRefId, '-');
-                            return 'UCR-CE-' . str_pad(++ $lastNumber, 7, '0', STR_PAD_LEFT);
+                            return 'UCR-CE-' . str_pad(++ $lastNumber, 6, '0', STR_PAD_LEFT);
                         } else {
                             // Handle the case where no UCR reference IDs exist yet
                             // (Consider a default starting point or user input)
-                            return 'UCR-CE-0000001'; // Example default (adjust as needed)
+                            return 'UCR-CE-000999'; // Example default (adjust as needed)
                         }
                     })
                     ->disabled()
                     ->dehydrated()
                     ->required()
                     ->maxLength(32)
-                    ->unique(Accrual::class, 'ucr_ref_id', ignoreRecord: true)
+                    ->unique(accrual::class, 'ucr_ref_id', ignoreRecord: true)
                     ->label('UCR Reference ID')
                     ->placeholder('UCR Reference ID'),
                 TextInput::make('client_name')
@@ -84,21 +87,25 @@ class AccrualsResource extends Resource
                     ->maxLength(25)
                     ->disabledOn(Pages\EditAccrualsParkDoc::class)
                     ->placeholder('WBS No.'),
-                TextInput::make('particulars')
+                TextArea::make('particulars')
                     ->label('Particulars')
-                    ->maxLength(50)
+                    ->maxLength(255)
                     ->disabledOn(Pages\EditAccrualsParkDoc::class)
-                    ->placeholder('Particulars'),
-                Select::make('business_unit')
-                    ->label('Business Unit')
-                    ->disabledOn(Pages\EditAccrualsParkDoc::class)
-                    ->options([
-                        'Facility Services' => 'Facility Services',
-                        'Transport Services' => 'Transport Services',
-                        'Warehouse Services' => 'Warehouse Services',
-                        'General Services' => 'General Services',
-                        'Cons & Reno Services' => 'Cons & Reno Services',
-                    ]),
+                    ->placeholder('Particulars')
+                    ->columnSpan('full')
+                    ->reactive()
+                    ->autosize(true)
+                    ->rows(5)
+                    ->hint(function ($state) {
+                        $singleSmsCharactersCount = 255;
+                        $charactersCount = strlen($state);
+                        $smsCount = 0;
+                        if ($charactersCount > 0) {
+                            $smsCount = ceil(strlen($state) / $singleSmsCharactersCount);
+                        }
+                        $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
+                        return $smsCount . ' Character (left: ' . $leftCharacters . ' characters)';
+                    }),
                 ])->columnspan(2)
                   ->columns(2),
                 Section::make('')
@@ -136,6 +143,16 @@ class AccrualsResource extends Resource
                                 ->options([
                                     'LSCP' => 'LCSP',
                                     'OOS' => 'OOS',
+                                ]),
+                        Select::make('business_unit')
+                                ->label('Business Unit')
+                                ->disabledOn(Pages\EditAccrualsParkDoc::class)
+                                ->options([
+                                    'Facility Services' => 'Facility Services',
+                                    'Transport Services' => 'Transport Services',
+                                    'Warehouse Services' => 'Warehouse Services',
+                                    'General Services' => 'General Services',
+                                    'Cons & Reno Services' => 'Cons & Reno Services',
                                 ]),
                     ])->columnspan(1),
                 Section::make('')
@@ -193,7 +210,7 @@ class AccrualsResource extends Resource
         return $table
             ->emptyStateHeading('No Accruals yet')
             ->emptyStateDescription('Once you create your first accrual, it will appear here.')
-            ->paginated([10, 25, 50, 100,])
+            ->paginated([10, 25, 50])
             ->columns([
                 TextColumn::make('ucr_ref_id')
                     ->label('UCR Reference ID')
@@ -205,22 +222,23 @@ class AccrualsResource extends Resource
                     ->searchable()
                     //->limit(15)
                     ->sortable(),
+                TextColumn::make('accrual_amount')
+                    ->label('Accrual Amount')
+                    ->money('Php')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('date_accrued')
                     ->label('Date Accrued in SAP')
                     ->date()
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('UCR_Park_Doc')
                     ->label('UCR Park Doc No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('business_unit')
                     ->label('Business Unit')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('accrual_amount')
-                    ->label('Accrual Amount')
-                    ->money('Php')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('period_started')
@@ -264,9 +282,9 @@ class AccrualsResource extends Resource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

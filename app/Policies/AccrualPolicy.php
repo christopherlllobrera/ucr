@@ -3,17 +3,17 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Activitylog;
+use App\Models\accrual;
 use Illuminate\Auth\Access\Response;
 
-class ActivityPolicy
+class AccrualPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('view-accrual')) {
             return true;
         }
         return false;
@@ -22,9 +22,9 @@ class ActivityPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user)
+    public function view(User $user, accrual $accrual)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('view-accrual')) {
             return true;
         }
         return false;
@@ -35,7 +35,7 @@ class ActivityPolicy
      */
     public function create(User $user)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('create-accrual')) {
             return true;
         }
         return false;
@@ -44,9 +44,9 @@ class ActivityPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user)
+    public function update(User $user, accrual $accrual)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('update-accrual')) {
             return true;
         }
         return false;
@@ -55,9 +55,9 @@ class ActivityPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user)
+    public function delete(User $user, accrual $accrual)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('delete-accrual')) {
             return true;
         }
         return false;
@@ -66,9 +66,9 @@ class ActivityPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user)
+    public function restore(User $user, accrual $accrual)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('delete-accrual')) {
             return true;
         }
         return false;
@@ -77,9 +77,9 @@ class ActivityPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user)
+    public function forceDelete(User $user, accrual $accrual)
     {
-        if ($user->hasPermissionTo('view-logs')) {
+        if ($user->hasPermissionTo('delete-accrual')) {
             return true;
         }
         return false;

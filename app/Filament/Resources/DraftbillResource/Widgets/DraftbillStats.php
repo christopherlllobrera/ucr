@@ -21,7 +21,6 @@ class DraftbillStats extends BaseWidget
             if ($number < 1000) {
                 return (string) Number::format($number, 0);
             }
-
             if ($number < 1000000) {
                 return Number::format($number / 1000, 2) . 'K';
             }
@@ -39,7 +38,7 @@ class DraftbillStats extends BaseWidget
                 ->chart([1, 100, 500, 800, 900, 1000, draftbilldetails::count()]),
             Stat::make('Total Draftbills Amount','₱'. $formatNumber (draftbilldetails::sum('draftbill_amount')))
                 ->description('Total Draft bill amount')
-                ->descriptionIcon('heroicon-o-wallet', IconPosition::Before)
+                ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('primary')
                 ->chart([1,500000, draftbilldetails::sum('draftbill_amount')]),
                 Stat::make('Pending Draft Bill', (accrual::count() - draftbilldetails::count()) )

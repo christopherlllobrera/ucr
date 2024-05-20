@@ -31,6 +31,7 @@ class DraftbillrelationSeeder extends Seeder
                         'id' => $line[0],
                         'draftbill_id' => $line[1],
                         'draftbilldetails_id' => $line[2],
+                        //'draftbill_no' => $line[2],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];

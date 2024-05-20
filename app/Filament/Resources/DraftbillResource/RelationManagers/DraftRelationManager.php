@@ -13,6 +13,7 @@ use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Forms\Components\Textarea;
 
 class DraftRelationManager extends RelationManager
 {
@@ -40,10 +41,21 @@ class DraftRelationManager extends RelationManager
                             ->minValue(1)
                             ->columnSpan(2)
                             ->placeholder('Draftbill Amount'),
-                        TextInput::make('draftbill_particular')
+                        TextArea::make('draftbill_particular')
                             ->label('Draftbill Particular')
                             ->columnSpan(3)
-                            ->placeholder('Draftbill Particular'),
+                            ->placeholder('Draftbill Particular')
+                            ->reactive()
+                            ->hint(function ($state) {
+                                $singleSmsCharactersCount = 255;
+                                $charactersCount = strlen($state);
+                                $smsCount = 0;
+                                if ($charactersCount > 0) {
+                                    $smsCount = ceil(strlen($state) / $singleSmsCharactersCount);
+                                }
+                                $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
+                                return $smsCount . ' Character (left: ' . $leftCharacters . ' characters)';
+                            }),
                         FileUpload::make('bill_attachment')
                             ->label('Attachment')
                             ->deletable(true)
@@ -56,7 +68,7 @@ class DraftRelationManager extends RelationManager
                             ->previewable()
                             ->maxSize(100000) //100MB
                             ->disk('local')
-                            ->directory('Accrual_Attachments')
+                            ->directory('Draftbill_Attachments')
                             ->visibility('public')
                             ->downloadable()
                             ->openable()
@@ -118,9 +130,7 @@ class DraftRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Create Draft bill')
-
                     ->successNotificationTitle('Draft bill created successfully')
-
                 //Tables\Actions\AttachAction::make(),
             ])
             ->actions([

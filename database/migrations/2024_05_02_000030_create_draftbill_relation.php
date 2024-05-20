@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(draftbill::class);
             $table->foreignIdFor(draftbilldetails::class);
+            //$table->foreignId('draftbill_no')->constrained('draftbilldetails')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -34,6 +34,32 @@ class CollectionRelationManager extends RelationManager
                         ->label('OR No.')
                         ->maxLength(32)
                         ->placeholder('OR No.'),
+                    FileUpload::make('collection_attachment')
+                        ->label('Attachments')
+                        ->deletable(true)
+                        ->multiple()
+                        ->minFiles(0)
+                        ->reorderable()
+                        ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                        //Storage Setting
+                        ->preserveFilenames()
+                        ->previewable()
+                        ->maxSize(100000) //100MB
+                        ->disk('local')
+                        ->directory('Collection_Attachments')
+                        ->visibility('public')
+                        ->downloadable()
+                        ->openable()
+                        // #IMAGE Settings
+                        // ->image()
+                        // ->imageEditor()
+                        // ->imageResizeMode('force')
+                        // ->imageCropAspectRatio('8:5')
+                        // ->imageResizeTargetWidth('1920')
+                        // ->imageResizeTargetHeight('1080')
+                        // ->imageEditorViewportWidth('1920')
+                        // ->imageEditorViewportHeight('1080'),
+                        ->columnSpanFull(),
                     ])->columnspan(2)
                         ->columns(2),
                 Section::make('')
@@ -41,43 +67,14 @@ class CollectionRelationManager extends RelationManager
                         DatePicker::make('tr_posting_date')
                             ->label('TR Posting Date'),
                     ])->columnspan(1),
-                Section::make('')
-                        ->schema([
-                        FileUpload::make('collection_attachment')
-                                ->label('Attachments')
-                                ->deletable(true)
-                                ->multiple()
-                                ->minFiles(0)
-                                ->reorderable()
-                                ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
-                                //Storage Setting
-                                ->preserveFilenames()
-                                ->previewable()
-                                ->maxSize(100000) //100MB
-                                ->disk('local')
-                                ->directory('Accruals_Attachments')
-                                ->visibility('public')
-                                ->downloadable()
-                                ->openable()
-                                // #IMAGE Settings
-                                // ->image()
-                                // ->imageEditor()
-                                // ->imageResizeMode('force')
-                                // ->imageCropAspectRatio('8:5')
-                                // ->imageResizeTargetWidth('1920')
-                                // ->imageResizeTargetHeight('1080')
-                                // ->imageEditorViewportWidth('1920')
-                                // ->imageEditorViewportHeight('1080'),
-                                ,
-                        ])->columnspan(2),
             ])->columns(3);
-
     }
-
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('amount_collected')
+            ->emptyStateHeading('No Collection yet')
+            ->emptyStateDescription('Once you create your first collection, it will appear here.')
             ->columns([
                 Tables\Columns\TextColumn::make('amount_collected'),
             ])
@@ -85,16 +82,19 @@ class CollectionRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->label('Create Collection')
+                ->successNotificationTitle('Collection created successfully'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                ->successNotificationTitle('Collection deleted successfully'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 }
