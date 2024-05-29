@@ -5,7 +5,9 @@ namespace App\Filament\Resources\CollectionResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\CollectionResource;
+use App\Filament\Resources\CollectionResource\Widgets\InvoiceTable;
 use App\Filament\Resources\CollectionResource\Widgets\CollectionStats;
+use App\Filament\Resources\CollectionResource\Widgets\InvoiceDetailsTable;
 
 class ListCollections extends ListRecords
 {
@@ -26,6 +28,8 @@ class ListCollections extends ListRecords
         return [
 
             CollectionStats::class,
+            InvoiceTable::class,
+            InvoiceDetailsTable::class,
 
         ];
     }

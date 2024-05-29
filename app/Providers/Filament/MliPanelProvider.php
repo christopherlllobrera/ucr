@@ -34,7 +34,7 @@ class MliPanelProvider extends PanelProvider
             ->id('mli')
             ->path('mli')
             ->login()
-            ->passwordReset()
+            //->passwordReset()
             ->colors(['primary' => Color::Orange,])
             ->favicon('images/favicon.ico')
             ->font('Inter', provider: GoogleFontProvider::class)

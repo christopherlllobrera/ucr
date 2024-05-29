@@ -25,8 +25,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DraftbillResource\RelationManagers;
 use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManager;
 use App\Filament\Resources\DraftbillResource\Widgets\DraftbillStats;
+use App\Models\draftbilldetails;
 use Filament\Forms\Components\Textarea;
-
+use Filament\Support\Enums\IconPosition;
+use Illuminate\Database\Eloquent\Model;
 
 class DraftbillResource extends Resource
 {
@@ -55,8 +57,10 @@ class DraftbillResource extends Resource
                     ->label('UCR Reference ID')
                     ->unique(ignoreRecord:True)
                     ->validationMessages([
-                        'unique' => 'The UCR Reference ID has already been registered.',
+                        'unique' => 'The UCR Reference ID has already have draftbill.',
                     ])
+                    // ->icon('heroicon-o-clipboard')
+                    // ->iconPosition(IconPosition::After)
                     ->placeholder('Select UCR Reference ID')
                     ->afterStateUpdated(function (Get $get, Set $set,){
                         $accrual = $get('ucr_ref_id');
@@ -155,6 +159,16 @@ class DraftbillResource extends Resource
                     ->rows(5)
                     //->placeholder('Particulars')
                     ->columnSpanFull()
+                    ->hint(function ($state) {
+                        $singleSmsCharactersCount = 255;
+                        $charactersCount = strlen($state);
+                        $smsCount = 0;
+                        if ($charactersCount > 0) {
+                            $smsCount = ceil(strlen($state) / $singleSmsCharactersCount);
+                        }
+                        $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
+                        return $leftCharacters . ' characters';
+                    })
                     ->readOnly(),
                 TextInput::make('accrual_amount')
                     ->label('Accrual Amount')
@@ -214,16 +228,18 @@ class DraftbillResource extends Resource
             ->emptyStateDescription('Once you create your first draft bill it will appear here.')
             ->paginated([10, 25, 50])
             ->striped()
-            ->heading('Draft Bill Created')
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('accruals.UCR_Park_Doc')
-                    ->label('UCR Park Doc')
-                    ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->copyable()
+                    ->icon('heroicon-o-clipboard')
+                    ->iconPosition(IconPosition::After),
+                // TextColumn::make('draftbill_details.draftbill.no')
+                //     ->label('Draft Bill No.')
+                //     ->searchable()
+                //     ->sortable(),
                 TextColumn::make('accruals.client_name')
                     ->label('Client')
                     ->searchable()
@@ -245,7 +261,6 @@ class DraftbillResource extends Resource
                     ->sortable(),
                 TextColumn::make('accruals.wbs_no')
                     ->label('WBS No.')
-                    //->limit(10)
                     ->toggleable (isToggledHiddenByDefault: false)
                     ->searchable()
                     ->sortable(),
@@ -268,7 +283,6 @@ class DraftbillResource extends Resource
     {
         return [
             DraftRelationManager::class,
-
         ];
     }
 

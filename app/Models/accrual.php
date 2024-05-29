@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasPermissions;
 
 class accrual extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPermissions;
 
     protected $fillable = [
         'ucr_ref_id',
@@ -30,8 +31,24 @@ class accrual extends Model
         'accruals_attachment' => 'array',
     ];
 
-    public function parkdoc()
+    public function draftbill()
     {
-        return $this->belongsTo(accrual::class, 'ucr_ref_id');
+        return $this->hasMany(draftbill::class, 'ucr_ref_id');
     }
+
+    public function draft()
+    {
+        return $this->belongsToMany(draftbilldetails::class, 'draftbill_relation')
+        //->withPivot('id', 'draftbill_id', 'draftbilldetails_id')
+        ;
+    }
+    public function draftbillno()
+    {
+        return $this->belongsTo(draftbilldetails::class, 'draftbill_no');
+    }
+
+    // public function draftbilldetails()
+    // {
+    //     return $this->hasManyThrough(draftbilldetails::class, draftbill::class, 'ucr_ref_id', 'draftbill_no', 'ucr_ref_id', 'id');
+    // }
 }

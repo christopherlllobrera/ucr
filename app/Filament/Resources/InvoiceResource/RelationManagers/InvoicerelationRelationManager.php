@@ -90,7 +90,7 @@ class InvoicerelationRelationManager extends RelationManager
                                 ->preserveFilenames()
                                 ->previewable()
                                 ->maxSize(100000) //100MB
-                                ->disk('local')
+                                ->disk('public')
                                 ->directory('Invoice_Attachments')
                                 ->visibility('public')
                                 ->downloadable()

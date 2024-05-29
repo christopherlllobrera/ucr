@@ -13,7 +13,7 @@ class InvoicePolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view-invoice')) {
+        if ($user->hasPermissionTo('view-any-invoice')) {
             return true;
         }
         return false;

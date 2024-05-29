@@ -6,6 +6,10 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\InvoiceResource;
 use App\Filament\Resources\InvoiceResource\Widgets\InvoiceStats;
+use App\Filament\Resources\DraftbillResource\Widgets\DraftbillRelationTable;
+use App\Filament\Resources\InvoiceResource\Widgets\DraftbillAccrualTable;
+use App\Filament\Resources\InvoiceResource\Widgets\DraftbillTable;
+use App\Filament\Resources\InvoiceResource\Widgets\InvoiceAccrualsTable;
 
 class ListInvoices extends ListRecords
 {
@@ -24,6 +28,9 @@ class ListInvoices extends ListRecords
     {
         return [
             InvoiceStats::class,
+            DraftbillAccrualTable::class,
+            DraftbillRelationTable::class,
+
         ];
     }
 }

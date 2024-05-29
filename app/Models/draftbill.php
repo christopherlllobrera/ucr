@@ -22,6 +22,17 @@ class draftbill extends Model
     }
     public function draftbillno()
     {
-        return $this->belongsTo(draftbilldetails::class, 'draftbill_no');
+        return $this->belongsToMany(draftbill::class, 'draftbill_no')
+        ->withPivot('id', 'draftbill_id', 'draftbilldetails_id')
+        ;
+    }
+
+    public function draftbilldetails()//for draftbill table
+    {
+        return $this->hasMany(draftbilldetails::class, 'draftbill_id', 'id');
+    }
+    public function accrual()
+    {
+        return $this->belongsTo(accrual::class, 'ucr_ref_id');
     }
 }

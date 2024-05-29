@@ -7,29 +7,31 @@ use App\Models\accrual;
 use Filament\Tables\Table;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\TableWidget as BaseWidget;
-
 
 class AccrualsTable extends BaseWidget
 
 {
     protected int | string | array $columnSpan = 'full';
+    protected static bool $isLazy = false;
     public function table(Table $table): Table
 
     {
         return $table
             ->query(accrual::query())
-            ->heading('UCR List')
+            ->heading('Accrual Table')
             ->columns([
                 TextColumn::make('ucr_ref_id')
                     ->label('UCR Reference ID')
                     ->searchable()
-                    ->weight(FontWeight::Bold)
-                    ->sortable(),
+                    ->sortable()
+                    ->copyable()
+                    ->icon('heroicon-o-clipboard')
+                    ->iconPosition(IconPosition::After),
                 TextColumn::make('client_name')
                     ->label('Client')
                     ->searchable()
-                    //->limit(15)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('accrual_amount')

@@ -21,7 +21,6 @@ return new class extends Migration
             $table->date('bill_date_approved')->nullable();
             $table->string('bill_attachment')->nullable();
             $table->timestamps();
-
         });
     }
 

@@ -13,7 +13,7 @@ class AccrualPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view-accrual')) {
+        if ($user->hasPermissionTo('view-any-accrual')) {
             return true;
         }
         return false;
@@ -51,6 +51,14 @@ class AccrualPolicy
         }
         return false;
     }
+
+    // public function EditAccrualsParkDoc (User $user, accrual $accrual)
+    // {
+    //     if ($user->hasPermissionTo('update-accrual')) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     /**
      * Determine whether the user can delete the model.

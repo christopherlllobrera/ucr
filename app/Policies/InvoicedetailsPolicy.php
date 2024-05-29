@@ -24,7 +24,7 @@ class InvoicedetailsPolicy
      */
     public function view(User $user, invoicedetails $invoicedetails)
     {
-        if ($user->hasPermissionTo('view-invoice')) {
+        if ($user->hasPermissionTo('view-any-invoice')) {
             return true;
         }
         return false;

@@ -19,22 +19,25 @@ use Filament\Tables\Grouping\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Traits\HasPermissions;
 use App\Filament\Resources\AccrualsResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AccrualsResource\RelationManagers;
 use App\Filament\Resources\AccrualsResource\Pages\UpdateAccruals;
+
 use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
 use App\Filament\Resources\AccrualsResource\Pages\EditAccrualsParkDoc;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Textarea;
 
 
 class AccrualsResource extends Resource
@@ -104,7 +107,7 @@ class AccrualsResource extends Resource
                             $smsCount = ceil(strlen($state) / $singleSmsCharactersCount);
                         }
                         $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
-                        return $smsCount . ' Character (left: ' . $leftCharacters . ' characters)';
+                        return $leftCharacters . ' characters';
                     }),
                 ])->columnspan(2)
                   ->columns(2),
@@ -174,7 +177,7 @@ class AccrualsResource extends Resource
                                 ->preserveFilenames()
                                 ->previewable()
                                 ->maxSize(100000) //100MB
-                                ->disk('local')
+                                ->disk('public')
                                 ->directory('Accrual_Attachments')
                                 ->visibility('public')
                                 ->deletable(true)
@@ -216,7 +219,9 @@ class AccrualsResource extends Resource
                     ->label('UCR Reference ID')
                     ->searchable()
                     ->weight(FontWeight::Bold)
-                    ->sortable(),
+                    ->sortable()
+                    ->icon('heroicon-o-clipboard')
+                    ->iconPosition(IconPosition::After),
                 TextColumn::make('client_name')
                     ->label('Client')
                     ->searchable()
@@ -268,7 +273,11 @@ class AccrualsResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])->recordUrl(null)
+            ])
+            // ->recordUrl(null)
+            ->recordUrl(
+                fn (accrual $record): string => Pages\EditAccrualsParkDoc::getUrl([$record->id]),
+            )
             ->filters([
                 //
             ])
@@ -279,6 +288,10 @@ class AccrualsResource extends Resource
                         ->label('Add Park Doc')
                         ->icon('heroicon-o-document-text')
                         ->url(fn ($record) => AccrualsResource::getUrl('edit-parkdoc', ['record' => $record->id]))
+                        ->visible(fn ($record) => $record->UCR_Park_Doc == null),
+                        // ->visible(fn() => HasPermissions ('update-accrual'))
+
+
                 ]),
             ])
             ->bulkActions([
@@ -301,7 +314,8 @@ class AccrualsResource extends Resource
             'index' => Pages\ListAccruals::route('/'),
             'create' => Pages\CreateAccruals::route('/create'),
             'edit' => Pages\EditAccruals::route('/{record}/edit'),
-            'edit-parkdoc' => Pages\EditAccrualsParkDoc::route('/{record}/edit-parkdoc'),
+            'edit-parkdoc' => Pages\EditAccrualsParkDoc::route('/{record}/edit-parkdoc')
+
         ];
     }
 
