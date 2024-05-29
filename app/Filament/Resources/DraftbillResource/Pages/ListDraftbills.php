@@ -3,12 +3,13 @@
 namespace App\Filament\Resources\DraftbillResource\Pages;
 
 use Filament\Actions;
+use App\Models\draftbill;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\DraftbillResource;
 use App\Filament\Resources\DraftbillResource\Widgets\AccrualsTable;
-use App\Filament\Resources\DraftbillResource\Widgets\DraftbillRelationTable;
 use App\Filament\Resources\DraftbillResource\Widgets\DraftbillStats;
-use App\Models\draftbill;
+use App\Filament\Resources\DraftbillResource\Widgets\DraftbillRelationTable;
+use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManager;
 
 class ListDraftbills extends ListRecords
 {
@@ -27,8 +28,14 @@ class ListDraftbills extends ListRecords
         return [
             DraftbillStats::class,
             AccrualsTable::class,
-            //DraftbillRelationTable::class,
+            DraftbillRelationTable::class,
         ];
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            DraftRelationManager::class,
+        ];
+    }
 }

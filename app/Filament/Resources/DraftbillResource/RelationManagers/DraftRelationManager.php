@@ -54,7 +54,7 @@ class DraftRelationManager extends RelationManager
                                     $smsCount = ceil(strlen($state) / $singleSmsCharactersCount);
                                 }
                                 $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
-                                return $smsCount . ' Character (left: ' . $leftCharacters . ' characters)';
+                                return $leftCharacters . ' characters';
                             }),
                         FileUpload::make('bill_attachment')
                             ->label('Attachment')
@@ -67,7 +67,7 @@ class DraftRelationManager extends RelationManager
                             ->preserveFilenames()
                             ->previewable()
                             ->maxSize(100000) //100MB
-                            ->disk('local')
+                            ->disk('public')
                             ->directory('Draftbill_Attachments')
                             ->visibility('public')
                             ->downloadable()
@@ -143,7 +143,7 @@ class DraftRelationManager extends RelationManager
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     //Tables\Actions\DetachBulkAction::make(),
-                    Tables\Actions\DeleteBulkAction::make(),
+                    //Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

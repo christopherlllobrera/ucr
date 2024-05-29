@@ -13,7 +13,7 @@ class DraftbilldetailsPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view-draftbill')) {
+        if ($user->hasPermissionTo('view-any-draftbill')) {
             return true;
         }
         return false;

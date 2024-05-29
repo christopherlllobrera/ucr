@@ -62,6 +62,11 @@ class PermissionSeeder extends Seeder
         'view-collection',
         'delete-collection',
 
+        'view-any-accrual',
+        'view-any-draftbill',
+        'view-any-invoice',
+        'view-any-collection',
+
         //add new permissions here and customize/add it in the policies
         ];
 

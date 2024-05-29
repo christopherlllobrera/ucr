@@ -13,7 +13,7 @@ class CollectionPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->hasPermissionTo('view-collection')) {
+        if ($user->hasPermissionTo('view-any-collection')) {
             return true;
         }
         return false;
