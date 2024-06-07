@@ -196,6 +196,7 @@ class AccrualsResource extends Resource
                             ->label('UCR Park Document No.')
                             ->placeholder('UCR Park Document No.')
                             ->numeric()
+                            ->required(fn (string $operation): bool => $operation === 'edit')
                             ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
                         DatePicker::make('date_accrued')
                             ->label('Date Accrued in SAP')

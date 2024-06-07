@@ -13,14 +13,15 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Notifications\Actions\Action;
 
 class DraftRelationManager extends RelationManager
 {
     protected static string $relationship = 'draft';
-
     protected static ?string $title = 'Draft Bill Details';
-
+    protected static ?string $heading = 'Draft Bill Details';
     protected static bool $isLazy = false;
+
 
     public function form(Form $form): Form
     {
@@ -28,23 +29,23 @@ class DraftRelationManager extends RelationManager
             ->schema([
                 Section::make('Draft bill Details')
                     ->schema([
-                        TextInput::make('draftbill_no')
-                            ->label('Draftbill No.')
-                            ->placeholder('Draftbill No.')
+                        TextInput::make('draftbill_number')
+                            ->label('Draft Bill No.')
+                            ->placeholder('Draft Bill No.')
                             ->unique(ignoreRecord: true)
                             ->columnSpan(1),
                         TextInput::make('draftbill_amount')
-                            ->label('Draftbill Amount')
-                            ->placeholder('Draftbill Amount')
+                            ->label('Draft Bill Amount')
+                            ->placeholder('Draft Bill Amount')
                             ->inputMode('decimal')
                             ->prefix('₱')
                             ->numeric()
                             ->minValue(1)
                             ->columnSpan(2),
                         TextArea::make('draftbill_particular')
-                            ->label('Draftbill Particular')
+                            ->label('Draft Bill Particular')
                             ->columnSpan(3)
-                            ->placeholder('Draftbill Particular')
+                            ->placeholder('Draft Bill Particular')
                             ->reactive()
                             ->hint(function ($state) {
                                 $singleSmsCharactersCount = 255;
@@ -90,21 +91,24 @@ class DraftRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('draftbill_no')
+            //->recordTitleAttribute('draftbill_no')
             ->emptyStateHeading('No draft bills yet')
             ->emptyStateDescription('Once you create your first draft bill, it will appear here.')
             ->heading('Draft Bills')
             ->columns([
                 Tables\Columns\TextColumn::make('draftbill_number')
-                    ->label('Draftbill No.')
+                    ->label('Draft Bill No.')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('draftbill_amount')
-                    ->label('Draftbill Amount')
+                    ->label('Draft Bill Amount')
                     ->searchable()
                     ->sortable()
                     ->money('Php'),
-                Tables\Columns\TextColumn::make('draftbill_particular'),
+                Tables\Columns\TextColumn::make('draftbill_particular')
+                    ->label('Draft Bill Particular')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('bill_date_created')
                     ->label('Date Created')
                     ->searchable()
@@ -124,19 +128,20 @@ class DraftRelationManager extends RelationManager
                     ->date()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('draftbill_no', 'desc')
+            ->defaultSort('draftbill_number', 'desc')
             ->filters([
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                Tables\Actions\CreateAction::make('Create Draft Bill')
                     ->label('Create Draft bill')
                     ->successNotification(
                         Notification::make()
                             ->success()
                             ->title('Draft Bill Created')
-                            ->body('The Draftbill has been created successfully')
+                            ->body('The Draft  Bill has been created successfully')
                             ->iconColor('success')
-                            ->duration(5000)
+                            ->duration(5000),
+
                         //->sendToDatabase(auth()->user())
                     ),
             ])

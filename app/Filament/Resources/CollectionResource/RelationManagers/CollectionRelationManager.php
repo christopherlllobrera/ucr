@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Notifications\Notification;
 
 class CollectionRelationManager extends RelationManager
 {
@@ -25,6 +26,7 @@ class CollectionRelationManager extends RelationManager
             ->schema([
                 Section::make()
                 ->schema([
+
                     TextInput::make('amount_collected')
                         ->label('Amount Collected')
                         ->maxLength(32)
@@ -37,6 +39,8 @@ class CollectionRelationManager extends RelationManager
                         ->label('OR No.')
                         ->maxLength(32)
                         ->placeholder('OR No.'),
+                    DatePicker::make('tr_posting_date')
+                        ->label('TR Posting Date'),
                     FileUpload::make('collection_attachment')
                         ->label('Attachments')
                         ->deletable(true)
@@ -64,13 +68,8 @@ class CollectionRelationManager extends RelationManager
                         // ->imageEditorViewportHeight('1080'),
                         ->columnSpanFull(),
                     ])->columnspan(2)
-                        ->columns(2),
-                Section::make('')
-                    ->schema([
-                        DatePicker::make('tr_posting_date')
-                            ->label('TR Posting Date'),
-                    ])->columnspan(1),
-            ])->columns(3);
+                        ->columns(3),
+            ])->columns(2);
     }
     public function table(Table $table): Table
     {
@@ -100,7 +99,14 @@ class CollectionRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                 ->label('Create Collection')
-                ->successNotificationTitle('Collection created successfully'),
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Collection Created')
+                        ->body('The Collection has been created successfully')
+                        ->iconColor('success')
+                        ->duration(5000)
+                ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

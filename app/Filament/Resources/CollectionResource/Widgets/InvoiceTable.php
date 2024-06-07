@@ -56,7 +56,7 @@ class InvoiceTable extends BaseWidget
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('invoicerelation.accounting_doc')
+                TextColumn::make('invoicerelation.accounting_document')
                     ->label('Accounting Doc.')
                     ->searchable()
                     ->sortable()

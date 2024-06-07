@@ -27,7 +27,7 @@ class InvoiceDetailsTable extends BaseWidget
                     ->copyable()
                     ->icon('heroicon-o-clipboard')
                     ->iconPosition(IconPosition::After),
-                Tables\Columns\TextColumn::make('accounting_doc')
+                Tables\Columns\TextColumn::make('accounting_document')
                     ->label('Accounting Document')
                     ->searchable()
                     ->sortable(),

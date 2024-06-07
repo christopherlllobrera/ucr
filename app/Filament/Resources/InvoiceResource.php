@@ -23,6 +23,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 
 class InvoiceResource extends Resource
 {
@@ -39,6 +40,16 @@ class InvoiceResource extends Resource
                 Section::make('Accrual Details')
                     ->schema([
                         Select::make('ucr_ref_id')
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    // Hide the helper text in edit mode
+                                    return null;
+                                } else {
+                                    // Show the helper text in create mode
+                                    return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
+                                }
+                            })
+                            //->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.'))
                             ->label('UCR Reference ID')
                             ->placeholder('Select UCR Reference ID')
                             ->disabledOn('edit')
@@ -198,6 +209,15 @@ class InvoiceResource extends Resource
                                 'unique' => 'The Draft Bill No. has already been selected.
                             Go to Active Invoice Table to add invoice details',
                             ])
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    // Hide the helper text in edit mode
+                                    return null;
+                                } else {
+                                    // Show the helper text in create mode
+                                    return new HtmlString('Select the <strong>Draft Bill ID</strong> to auto-fill <br>the fields.');
+                                }
+                            })
                             ->searchable()
                             ->live()
                             ->preload()
@@ -318,7 +338,7 @@ class InvoiceResource extends Resource
                     ->label('Draftbill No.')
                     ->searchable()
                     ->sortable(),
-                BadgeColumn::make('invoicerelation.accounting_doc')
+                BadgeColumn::make('invoicerelation.accounting_document')
                     ->label('Accounting Doc.')
                     ->searchable()
                     ->sortable()
@@ -327,11 +347,6 @@ class InvoiceResource extends Resource
                     ->label('Reversal Doc.')
                     ->searchable()
                     ->sortable(),
-                BadgeColumn::make('invoicerelation.accounting_doc')
-                    ->label('Accounting Doc.')
-                    ->searchable()
-                    ->sortable()
-                    ->color('success'),
                 TextColumn::make('invoicerelation.billing_statement')
                     ->label('Billing Statement')
                     ->searchable()

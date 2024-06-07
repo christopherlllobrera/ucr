@@ -17,7 +17,7 @@ class collection extends Model
 
     public function accruals()
     {
-        return $this->belongsTo(accrual::class, 'ucr_ref_id');
+        return $this->belongsTo(accrual::class, 'ucr_ref_id')->orderBy('created_at', 'desc');
     }
 
     public function collection()

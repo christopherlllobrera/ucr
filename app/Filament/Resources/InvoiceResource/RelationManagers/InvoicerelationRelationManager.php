@@ -33,23 +33,24 @@ class InvoicerelationRelationManager extends RelationManager
                     ->placeholder('Reversal Document')
                     ->maxLength(32),
                 TextInput::make('gr_amount')
-                    ->label('GR Amount')
+                    ->label('Good Receipt Amount')
                     ->prefix('₱')
                     ->numeric()
                     ->inputMode('decimal')
                     ->minValue(1)
                     ->placeholder('GR Amount'),
-                TextInput::make('accounting_doc')
+                TextInput::make('accounting_document')
                     ->label('Accounting Document')
                     ->maxLength(32)
+                    ->unique(ignoreRecord:true)
                     ->placeholder('Accounting Document'),
                 TextInput::make('pojo_no')
                     ->label('PO/JO No.')
                     ->placeholder('PO/JO No.'),
                 TextInput::make('gr_no_meralco')
-                    ->label('GR No.  created by Meralco')
+                    ->label('GR No. created by Meralco')
                     ->maxLength(50)
-                    ->placeholder('GR NO. created by Meralco'),
+                    ->placeholder('Good Receipt NO. created by Meralco'),
                 TextInput::make('billing_statement')
                     ->label('Billing Statement No.')
                     ->maxLength(50)
@@ -136,7 +137,7 @@ class InvoicerelationRelationManager extends RelationManager
                     ->label('Reversal Document')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('accounting_doc')
+                Tables\Columns\TextColumn::make('accounting_document')
                     ->label('Accounting Document')
                     ->searchable()
                     ->sortable(),
@@ -176,7 +177,14 @@ class InvoicerelationRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                         ->label('Create Invoice')
-                        ->successNotificationTitle('Invoice Created successfully')
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Invoice Created')
+                                ->body('The Invoice has been created successfully')
+                                ->iconColor('success')
+                                ->duration(5000),
+                        )
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

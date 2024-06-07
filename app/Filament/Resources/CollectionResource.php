@@ -23,19 +23,15 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\HtmlString;
 
 class CollectionResource extends Resource
 {
     protected static ?string $model = collection::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-
     protected static ?string $navigationLabel = 'Collection';
-
     protected static ?int $navigationSort = 5;
-
     protected static ?string $breadcrumb = 'Collection';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -52,6 +48,13 @@ class CollectionResource extends Resource
                             ->columnSpan(1)
                             ->placeholder('Select UCR Reference ID')
                             ->label('UCR Reference ID')
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    return null;
+                                } else {
+                                    return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
+                                }
+                            })
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $accrual = $get('ucr_ref_id');
                                 if ($accrual) {
@@ -105,6 +108,7 @@ class CollectionResource extends Resource
                             })
                             ->disabledOn('edit'),
                         TextInput::make('client_name')
+
                             ->label('Client Name')
                             ->reactive()
                             ->readOnly(),
@@ -189,6 +193,13 @@ class CollectionResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Draftbill No. already exists.',
                             ])
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    return null;
+                                } else {
+                                    return new HtmlString('Select the <strong>Draft Bill ID</strong> to auto-fill the fields.');
+                                }
+                            })
                             ->searchable()
                             ->preload()
                             ->live()
@@ -228,7 +239,8 @@ class CollectionResource extends Resource
                             ->native(false)
                             ->disabledOn('edit'),
                         TextInput::make('draftbill_number')
-                            ->label('Draftbill No.'),
+                            ->label('Draftbill No.')
+                            ->readOnly(),
                         TextInput::make('draftbill_amount')
                             ->label('Draftbill Amount')
                             ->prefix('₱')
@@ -259,6 +271,15 @@ class CollectionResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Accounting Document already exists.',
                             ])
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    // Hide the helper text in edit mode
+                                    return null;
+                                } else {
+                                    // Show the helper text in create mode
+                                    return new HtmlString('Select <strong>Invoice ID</strong> to auto-fill the fields.');
+                                }
+                            })
                             ->label('Invoice ID')
                             ->placeholder('Select Invoice ID')
                             ->searchable()

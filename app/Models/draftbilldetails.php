@@ -11,7 +11,7 @@ class draftbilldetails extends Model
 
     protected $fillable = [
         'draftbill_particular',
-        'draftbill_no',
+        'draftbill_number',
         'bill_date_created',
         'draftbill_amount',
         'bill_date_submitted',
