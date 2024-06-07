@@ -31,7 +31,7 @@ class CreateAccruals extends CreateRecord
             ->duration(5000)
             ->sendToDatabase($recipient)
             ->actions([
-                Action::make('View Draft Bill')
+                Action::make('View Accruals')
                     ->button()
                     ->url('/mli/accruals/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
                     ->icon('heroicon-o-eye'),

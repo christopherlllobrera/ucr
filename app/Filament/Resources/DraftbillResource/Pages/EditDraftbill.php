@@ -24,7 +24,8 @@ class EditDraftbill extends EditRecord
                         ->title('Active Draft Bill Deleted')
                         ->body( $this->record->accrual->ucr_ref_id . ' has been deleted successfully')
                         ->iconColor('success')
-                        ->duration(5000),
+                        ->duration(5000)
+                        
                 )
         ];
     }

@@ -16,7 +16,7 @@ class invoice extends Model
 
     public function accruals()
     {
-        return $this->belongsTo(accrual::class, 'ucr_ref_id')->where('ucr_ref_id', '!=', null);
+        return $this->belongsTo(accrual::class, 'ucr_ref_id')->orderBy('created_at', 'desc')->where('ucr_ref_id', '!=', null);
     }
 
     public function invoicerelation()

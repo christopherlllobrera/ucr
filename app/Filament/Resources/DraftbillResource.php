@@ -20,17 +20,14 @@ use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class DraftbillResource extends Resource
 {
     protected static ?string $model = Draftbill::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
-
     protected static ?string $navigationLabel = 'Draft Bill';
-
     protected static ?string $breadcrumb = 'Draft Bill';
-
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -38,9 +35,9 @@ class DraftbillResource extends Resource
         return $form
             ->schema([
                 Section::make('Accruals Details')
-                    ->description('Please select UCR Reference ID to auto-fill the fields.')
                     ->schema([
                         Select::make('ucr_ref_id')
+                            ->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong> to auto-fill the fields.'))
                             ->relationship('accruals', 'ucr_ref_id')
                             ->required()
                             ->searchable()
@@ -204,7 +201,7 @@ class DraftbillResource extends Resource
                             ->disabled(),
                         DatePicker::make('date_accrued')
                             ->label('Date Accrued in SAP')
-                            ->disabled(),
+                            ->readOnly(),
                         TextInput::make('UCR_Park_Doc')
                             ->label('UCR Park Document No.')
                             ->reactive()

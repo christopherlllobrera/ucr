@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CollectionResource\Pages;
 use App\Filament\Resources\CollectionResource;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Actions\Action;
 
 class CreateCollection extends CreateRecord
 {
@@ -23,7 +24,14 @@ class CreateCollection extends CreateRecord
                 ->body( $this->record->accruals->ucr_ref_id . ',' .  $this->record->draftbills->draftbill_number . ' and '. $this->record->invoices->accounting_document.' has been selected successfully')
                 ->iconColor('success')
                 ->duration(5000)
-                ->sendToDatabase($recipient);
+                ->sendToDatabase($recipient)
+                ->actions([
+                    Action::make('View')
+                        ->button()
+                        ->url('/mli/collections/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
+                        ->icon('heroicon-o-eye'),
+                ]);
+
     }
 
     // $recipient = auth()->user();

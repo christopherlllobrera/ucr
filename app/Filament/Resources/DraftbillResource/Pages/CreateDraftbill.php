@@ -26,7 +26,7 @@ class CreateDraftbill extends CreateRecord
             ->duration(5000)
             ->sendToDatabase(auth()->user())
             ->actions([
-                Action::make('View Draft Bill')
+                Action::make('View')
                     ->button()
                     ->url('/mli/draftbills/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
                     ->icon('heroicon-o-eye'),

@@ -6,6 +6,8 @@ use App\Filament\Resources\InvoiceResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Actions\Action;
+
 
 class CreateInvoice extends CreateRecord
 {
@@ -20,10 +22,16 @@ class CreateInvoice extends CreateRecord
             return Notification::make()
                 ->success()
                 ->title('UCR Reference ID and Draft Bill No. Selected')
-                ->body( $this->record->accruals->ucr_ref_id . 'and ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
+                ->body( $this->record->accruals->ucr_ref_id . ' and ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
                 ->iconColor('success')
                 ->duration(5000)
-                ->sendToDatabase($recipient);
+                ->sendToDatabase($recipient)
+                ->actions([
+                    Action::make('View')
+                        ->button()
+                        ->url('/mli/invoices/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
+                        ->icon('heroicon-o-eye'),
+                ]);;
 
     }
     protected function getFormActions(): array
