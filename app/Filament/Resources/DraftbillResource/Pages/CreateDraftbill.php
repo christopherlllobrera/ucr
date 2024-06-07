@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\DraftbillResource\Pages;
 
 use App\Filament\Resources\DraftbillResource;
+use App\Models\draftbill;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Actions\Action;
 
 class CreateDraftbill extends CreateRecord
 {
@@ -18,8 +20,17 @@ class CreateDraftbill extends CreateRecord
     {
         return Notification::make()
             ->success()
-            ->title('UCR Reference ID Selected')
-            ->body('Create your draft bill details.');
+            ->title('UCR Reference ID Created')
+            ->body( $this->record->accrual->ucr_ref_id . ' has been selected successfully, you can now proceed to select the draft bill details.')
+            ->iconColor('success')
+            ->duration(5000)
+            ->sendToDatabase(auth()->user())
+            ->actions([
+                Action::make('View Draft Bill')
+                    ->button()
+                    ->url('/mli/draftbills/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-eye'),
+            ]);
     }
     protected function getFormActions(): array
     {

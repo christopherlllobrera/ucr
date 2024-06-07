@@ -24,6 +24,7 @@ class InvoiceDetailsTable extends BaseWidget
                     ->label('Reversal Document')
                     ->searchable()
                     ->sortable()
+                    ->copyable()
                     ->icon('heroicon-o-clipboard')
                     ->iconPosition(IconPosition::After),
                 Tables\Columns\TextColumn::make('accounting_doc')

@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -14,7 +15,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 
 class CollectionRelationManager extends RelationManager
 {
+    protected static bool $isLazy = false;
     protected static string $relationship = 'collection';
+    protected static ?string $title = 'Collection Details';
 
     public function form(Form $form): Form
     {
@@ -76,7 +79,20 @@ class CollectionRelationManager extends RelationManager
             ->emptyStateHeading('No Collection yet')
             ->emptyStateDescription('Once you create your first collection, it will appear here.')
             ->columns([
-                Tables\Columns\TextColumn::make('amount_collected'),
+                TextColumn::make('amount_collected')
+                    ->label('Amount Collected')
+                    ->searchable()
+                    ->sortable()
+                    ->money('Php'),
+                TextColumn::make('or_number')
+                    ->label('OR No.')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('tr_posting_date')
+                    ->label('TR Posting Date')
+                    ->searchable()
+                    ->sortable()
+                    ->date(),
             ])
             ->filters([
                 //

@@ -29,7 +29,7 @@ class DraftbilldetailSeeder extends Seeder
                 DB::table('draftbilldetails')->insert($lines->map(function ($line) {
                     return [
                         'id' => $line[0],
-                        'draftbill_no' => $line[1],
+                        'draftbill_number' => $line[1],
                         'draftbill_particular' => $line[2],
                         'bill_date_created' => $line[3],
                         'draftbill_amount' => $line[4],

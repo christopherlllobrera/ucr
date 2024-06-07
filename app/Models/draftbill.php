@@ -14,7 +14,7 @@ class draftbill extends Model
     ];
     public function accruals()
     {
-        return $this->belongsTo(accrual::class, 'ucr_ref_id');
+        return $this->belongsTo(accrual::class, 'ucr_ref_id')->orderBy('created_at', 'desc')->where('ucr_ref_id', '!=', null);
     }
     public function draft()
     {

@@ -28,9 +28,13 @@ class ListInvoices extends ListRecords
     {
         return [
             InvoiceStats::class,
-            DraftbillAccrualTable::class,
-            DraftbillRelationTable::class,
-
+        ];
+    }
+    protected function getFooterWidgets(): array
+    {
+        return [
+            //DraftbillAccrualTable::class,
+            DraftbillTable::class,
         ];
     }
 }

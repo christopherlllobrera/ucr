@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('reversal_doc')->nullable();
             $table->double('gr_amount')->nullable();
             $table->date('date_reversal')->nullable();
-            $table->string('accounting_doc')->nullable();
+            $table->string('accounting_document')->nullable();
             $table->date('invoice_date_received')->nullable();
             $table->string('pojo_no')->nullable();
             $table->string('gr_no_meralco')->nullable();

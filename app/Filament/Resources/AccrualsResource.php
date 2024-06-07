@@ -78,7 +78,6 @@ class AccrualsResource extends Resource
                     ->label('Client')
                     ->placeholder('Client')
                     ->maxLength(50)
-                    ->columnSpan('full')
                     ->disabledOn(Pages\EditAccrualsParkDoc::class),
                 TextInput::make('person_in_charge')
                     ->label('Person-in-charge')
@@ -109,6 +108,42 @@ class AccrualsResource extends Resource
                         $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
                         return $leftCharacters . ' characters';
                     }),
+                    TextInput::make('accrual_amount')
+                                ->label('Accrual Amount')
+                                ->prefix('₱')
+                                ->numeric()
+                                ->minValue(1)
+                                ->inputMode('decimal')
+                                ->disabledOn(Pages\EditAccrualsParkDoc::class)
+                                ->placeholder('Accrual Amount')
+                                ->columnSpanFull(),
+                        FileUpload::make('accruals_attachment')
+                                ->label('Attachments')
+                                ->multiple()
+                                ->minFiles(0)
+                                ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                                //Storage Setting
+                                ->preserveFilenames()
+                                ->previewable()
+                                ->maxSize(100000) //100MB
+                                ->disk('public')
+                                ->directory('Accrual_Attachments')
+                                ->visibility('public')
+                                ->deletable(true)
+                                ->downloadable()
+                                ->openable()
+                                ->reorderable()
+                                ->uploadingMessage('Uploading Accrual attachment...')
+                                // #IMAGE Settings
+                                // ->image()
+                                // ->imageEditor()
+                                // ->imageResizeMode('force')
+                                // ->imageCropAspectRatio('8:5')
+                                // ->imageResizeTargetWidth('1920')
+                                // ->imageResizeTargetHeight('1080')
+                                // ->imageEditorViewportWidth('1920')
+                                // ->imageEditorViewportHeight('1080'),
+                                ->columnSpanFull(),
                 ])->columnspan(2)
                   ->columns(2),
                 Section::make('')
@@ -157,60 +192,23 @@ class AccrualsResource extends Resource
                                     'General Services' => 'General Services',
                                     'Cons & Reno Services' => 'Cons & Reno Services',
                                 ]),
-                    ])->columnspan(1),
-                Section::make('')
-                        ->schema([
-                            TextInput::make('accrual_amount')
-                                ->label('Accrual Amount')
-                                ->prefix('₱')
-                                ->numeric()
-                                ->minValue(1)
-                                ->inputMode('decimal')
-                                ->disabledOn(Pages\EditAccrualsParkDoc::class)
-                                ->placeholder('Accrual Amount'),
-                        FileUpload::make('accruals_attachment')
-                                ->label('Attachments')
-                                ->multiple()
-                                ->minFiles(0)
-                                ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
-                                //Storage Setting
-                                ->preserveFilenames()
-                                ->previewable()
-                                ->maxSize(100000) //100MB
-                                ->disk('public')
-                                ->directory('Accrual_Attachments')
-                                ->visibility('public')
-                                ->deletable(true)
-                                ->downloadable()
-                                ->openable()
-                                ->reorderable()
-                                ->uploadingMessage('Uploading Accrual attachment...')
-                                // #IMAGE Settings
-                                // ->image()
-                                // ->imageEditor()
-                                // ->imageResizeMode('force')
-                                // ->imageCropAspectRatio('8:5')
-                                // ->imageResizeTargetWidth('1920')
-                                // ->imageResizeTargetHeight('1080')
-                                // ->imageEditorViewportWidth('1920')
-                                // ->imageEditorViewportHeight('1080'),
-                                ->disabledOn(Pages\EditAccrualsParkDoc::class),
-                        ])->columnspan(2),
-                    Section::make()
-                        ->schema([
                         TextInput::make('UCR_Park_Doc')
                             ->label('UCR Park Document No.')
                             ->placeholder('UCR Park Document No.')
-                            ->numeric(),
+                            ->numeric()
+                            ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
                         DatePicker::make('date_accrued')
                             ->label('Date Accrued in SAP')
-                        ])->columnspan(1)->columns(1)->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
-            ])->columns(3);
+                            ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class])
+                    ])->columnspan(1),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->emptyStateHeading('No Accruals yet')
             ->emptyStateDescription('Once you create your first accrual, it will appear here.')
             ->paginated([10, 25, 50])
@@ -220,12 +218,13 @@ class AccrualsResource extends Resource
                     ->searchable()
                     ->weight(FontWeight::Bold)
                     ->sortable()
+                    ->copyable()
                     ->icon('heroicon-o-clipboard')
                     ->iconPosition(IconPosition::After),
                 TextColumn::make('client_name')
                     ->label('Client')
                     ->searchable()
-                    //->limit(15)
+                    ->wrap(2)
                     ->sortable(),
                 TextColumn::make('accrual_amount')
                     ->label('Accrual Amount')
@@ -273,7 +272,7 @@ class AccrualsResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('ucr_ref_id', 'desc')
             // ->recordUrl(null)
             ->recordUrl(
                 fn (accrual $record): string => Pages\EditAccrualsParkDoc::getUrl([$record->id]),
@@ -290,8 +289,6 @@ class AccrualsResource extends Resource
                         ->url(fn ($record) => AccrualsResource::getUrl('edit-parkdoc', ['record' => $record->id]))
                         ->visible(fn ($record) => $record->UCR_Park_Doc == null),
                         // ->visible(fn() => HasPermissions ('update-accrual'))
-
-
                 ]),
             ])
             ->bulkActions([
