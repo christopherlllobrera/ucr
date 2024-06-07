@@ -52,13 +52,13 @@ class AccrualPolicy
         return false;
     }
 
-    // public function EditAccrualsParkDoc (User $user, accrual $accrual)
-    // {
-    //     if ($user->hasPermissionTo('update-accrual')) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    public function EditAccrualsParkDoc(User $user, accrual $accrual) //Not working pa
+    {
+        if ($user->hasPermissionTo('update-accrual-park-doc')) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Determine whether the user can delete the model.

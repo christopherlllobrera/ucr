@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('draftbilldetails', function (Blueprint $table) {
             $table->id();
-            $table->string('draftbill_no')->unique()->nullable();
+            $table->string('draftbill_number')->unique()->nullable();
             $table->string('draftbill_particular')->nullable();
             $table->date('bill_date_created')->nullable();
             $table->double('draftbill_amount')->nullable();

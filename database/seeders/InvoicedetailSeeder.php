@@ -32,7 +32,7 @@ class InvoicedetailSeeder extends Seeder
                         'reversal_doc' => $line[1],
                         'gr_amount' => $line[2],
                         'date_reversal' => $line[3],
-                        'accounting_doc' => $line[4],
+                        'accounting_document' => $line[4],
                         'invoice_date_received' => $line[5],
                         'pojo_no' => $line[6],
                         'gr_no_meralco' => $line[7],

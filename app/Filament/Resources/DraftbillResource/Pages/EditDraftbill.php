@@ -5,11 +5,7 @@ namespace App\Filament\Resources\DraftbillResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\DraftbillResource;
-use App\Models\draftbill;
-use Actions\Save;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Actions as ComponentsActions;
-use PhpParser\Node\Expr\Cast\Bool_;
+use Filament\Notifications\Notification;
 
 class EditDraftbill extends EditRecord
 {
@@ -21,7 +17,15 @@ class EditDraftbill extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Active Draft Bill Deleted')
+                        ->body( $this->record->accrual->ucr_ref_id . ' has been deleted successfully')
+                        ->iconColor('success')
+                        ->duration(5000),
+                )
         ];
     }
     protected function getFormActions(): array

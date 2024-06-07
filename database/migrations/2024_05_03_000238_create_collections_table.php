@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ucr_ref_id')->constrained('accruals')->cascadeOnDelete();
             $table->foreignId('draftbill_no')->constrained('draftbilldetails')->cascadeOnDelete();
-            $table->foreignId('reversal_doc')->constrained('invoicedetails')->cascadeOnDelete();
+            $table->foreignId('accounting_doc')->constrained('invoicedetails')->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -28,30 +28,31 @@ class DraftbillRelationTable extends BaseWidget
 
         return $table
             ->query(draftbilldetails::query())
-            ->heading('Draftbill Table')
+            ->heading('Draft Bill Table')
+            ->striped()
             ->columns([
-                // TextColumn::make('draftbills.ucr_ref_id')
-                //     ->label('UCR Reference ID')
-                //     ->searchable()
-                //     ->sortable(),
-                TextColumn::make('draftbill_no')
-                    ->label('Draftbill No')
+                TextColumn::make('accrual.ucr_ref_id')
+                    ->label('UCR Reference ID')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('draftbill_number')
+                    ->label('Draft Bill No')
                     ->searchable()
                     ->sortable()
                     ->copyable()
                     ->icon('heroicon-o-clipboard')
                     ->iconPosition(IconPosition::After),
                 TextColumn::make('draftbill_amount')
-                    ->label('Draftbill Amount')
+                    ->label('Draft Bill Amount')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->sortable()
                     ->money('Php'),
                 TextColumn::make('draftbill_particular')
-                    ->label('Draftbill Particular')
+                    ->label('Draft Bill Particular')
                     ->searchable()
                     ->wrap(4)
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->sortable(),
                 TextColumn::make('bill_date_created')
                     ->label('Bill Date Created')

@@ -28,8 +28,14 @@ class ListCollections extends ListRecords
         return [
 
             CollectionStats::class,
+
+        ];
+    }
+    protected function getFooterWidgets(): array
+    {
+        return [
             InvoiceTable::class,
-            InvoiceDetailsTable::class,
+            //InvoiceDetailsTable::class,
 
         ];
     }

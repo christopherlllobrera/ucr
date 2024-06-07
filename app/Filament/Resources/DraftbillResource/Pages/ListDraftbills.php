@@ -14,7 +14,7 @@ use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManag
 class ListDraftbills extends ListRecords
 {
     protected static string $resource = DraftbillResource::class;
-    protected static ?string $title = 'Draft bills';
+    protected static ?string $title = 'Draft Bills';
 
     protected function getHeaderActions(): array
     {
@@ -23,15 +23,19 @@ class ListDraftbills extends ListRecords
                 ->label('Create Draftbill'),
         ];
     }
+    protected function getFooterWidgets(): array
+    {
+        return [
+            AccrualsTable::class,
+            //DraftbillRelationTable::class,
+        ];
+    }
     protected function getHeaderWidgets(): array
     {
         return [
             DraftbillStats::class,
-            AccrualsTable::class,
-            DraftbillRelationTable::class,
         ];
     }
-
     public static function getRelations(): array
     {
         return [

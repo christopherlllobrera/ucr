@@ -13,7 +13,7 @@ class invoicedetails extends Model
         'reversal_doc',
         'gr_amount',
         'date_reversal',
-        'accounting_doc',
+        'accounting_document',
         'invoice_date_received',
         'pojo_no',
         'gr_no_meralco',

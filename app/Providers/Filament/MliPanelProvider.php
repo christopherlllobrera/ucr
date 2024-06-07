@@ -35,11 +35,11 @@ class MliPanelProvider extends PanelProvider
             ->path('mli')
             ->login()
             //->passwordReset()
+            ->databaseNotifications()
             ->colors(['primary' => Color::Orange,])
             ->favicon('images/favicon.ico')
             ->font('Inter', provider: GoogleFontProvider::class)
             ->brandLogo(fn() => view('filament.app.logo'))
-            //->brandLogo('images/MLI (1).svg')
             ->brandLogoHeight('60px')
             ->darkMode(false)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -47,13 +47,12 @@ class MliPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->sidebarWidth('15rem')
+            ->sidebarWidth('250px')
             ->resources([
                 config('filament-logger.activity_resource')
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                //Widgets\
                 Widgets\AccountWidget::class,
                     UCRStats::class,
                     // UCRTable::class,

@@ -9,6 +9,10 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Filament\Pages\Page;
+use Pages\EditAccruals;
+use App\Filament\Resources\AccrualsResource\Pages;
+
 
 class AccrualsTable extends BaseWidget
 
@@ -21,6 +25,7 @@ class AccrualsTable extends BaseWidget
         return $table
             ->query(accrual::query())
             ->heading('Accrual Table')
+            ->striped()
             ->columns([
                 TextColumn::make('ucr_ref_id')
                     ->label('UCR Reference ID')
@@ -32,6 +37,7 @@ class AccrualsTable extends BaseWidget
                 TextColumn::make('client_name')
                     ->label('Client')
                     ->searchable()
+                    ->wrap(2)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('accrual_amount')
@@ -81,6 +87,7 @@ class AccrualsTable extends BaseWidget
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ]);
+            ])
+            ->defaultSort('ucr_ref_id', 'desc');
     }
 }

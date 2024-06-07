@@ -12,30 +12,26 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class InvoiceTable extends BaseWidget
 {
     protected static bool $isLazy = false;
+    protected int | string | array $columnSpan = 'full';
     public function table(Table $table): Table
 
     {
         return $table
             ->query(invoice::query())
-            ->heading('Accruals Table')
+            ->heading('Invoice Table')
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')
-                    ->icon('heroicon-o-clipboard')
-                    ->iconPosition(IconPosition::After)
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->copyable()
+                    ->icon('heroicon-o-clipboard')
+                    ->iconPosition(IconPosition::After),
                 TextColumn::make('accruals.UCR_Park_Doc')
                     ->label('UCR Park Doc')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->icon('heroicon-o-clipboard')
-                    ->iconPosition(IconPosition::After),
-                TextColumn::make('draftbills.draftbill_no')
-                    ->label('Draftbill No.')
-                    ->searchable()
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('accruals.accrual_amount')
                     ->label('Accrual Amount')
                     ->money('PHP')
@@ -46,6 +42,30 @@ class InvoiceTable extends BaseWidget
                     ->money('PHP')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('invoicerelation.invoice_posting_amount')
+                    ->label('Invoice Posting Amount')
+                    ->money('PHP')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('draftbills.draftbill_number')
+                    ->label('Draftbill No.')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('invoicerelation.reversal_doc')
+                    ->label('Reversal Doc.')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('invoicerelation.accounting_doc')
+                    ->label('Accounting Doc.')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('invoicerelation.billing_statement')
+                    ->label('Billing Statement')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ]);
     }
 }

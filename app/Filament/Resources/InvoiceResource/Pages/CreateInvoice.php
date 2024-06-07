@@ -16,10 +16,15 @@ class CreateInvoice extends CreateRecord
 
     protected function getCreatedNotification(): ?Notification
     {
-        return Notification::make()
-            ->success()
-            ->title('UCR Reference ID & Draft Bill No. Selected')
-            ->body('You can now add invoice details.');
+        $recipient = auth()->user();
+            return Notification::make()
+                ->success()
+                ->title('UCR Reference ID and Draft Bill No. Selected')
+                ->body( $this->record->accruals->ucr_ref_id . 'and ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
+                ->iconColor('success')
+                ->duration(5000)
+                ->sendToDatabase($recipient);
+
     }
     protected function getFormActions(): array
     {
