@@ -16,7 +16,7 @@ class invoice extends Model
 
     public function accruals()
     {
-        return $this->belongsTo(accrual::class, 'ucr_ref_id')->orderBy('created_at', 'desc')->where('ucr_ref_id', '!=', null);
+        return $this->belongsTo(accrual::class, 'ucr_ref_id')->orderBy('created_at', 'desc');
     }
 
     public function invoicerelation()
@@ -26,9 +26,7 @@ class invoice extends Model
 
     public function draftbills()
     {
-        return $this->belongsTo(draftbilldetails::class, 'draftbill_no')->orderBy('created_at', 'desc')
-        //->where('draftbill_no', '!=', null)
-        ;
+        return $this->belongsTo(draftbilldetails::class, 'draftbill_no')->orderBy('created_at', 'desc');
     }
 
     public function draft()

@@ -13,7 +13,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Actions\Action;
+use Illuminate\Http\RedirectResponse;
+
 
 class DraftRelationManager extends RelationManager
 {
@@ -21,13 +22,15 @@ class DraftRelationManager extends RelationManager
     protected static ?string $title = 'Draft Bill Details';
     protected static ?string $heading = 'Draft Bill Details';
     protected static bool $isLazy = false;
+    protected static ?string $label = 'Draft Bill';
+    protected static bool $canCreateAnother = false;
 
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Draft bill Details')
+                Section::make('Draft Bill Details')
                     ->schema([
                         TextInput::make('draftbill_number')
                             ->label('Draft Bill No.')
@@ -133,7 +136,7 @@ class DraftRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make('Create Draft Bill')
-                    ->label('Create Draft bill')
+                    ->label('Create Draft Bill')
                     ->successNotification(
                         Notification::make()
                             ->success()
@@ -141,9 +144,8 @@ class DraftRelationManager extends RelationManager
                             ->body('The Draft  Bill has been created successfully')
                             ->iconColor('success')
                             ->duration(5000),
-
-                        //->sendToDatabase(auth()->user())
                     ),
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
