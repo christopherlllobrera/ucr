@@ -11,6 +11,7 @@ use App\Models\draftbilldetails;
 use App\Models\invoice;
 use App\Models\invoicedetails;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -23,15 +24,19 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection as BaseCollection;
-use Illuminate\Support\HtmlString;
 
 class CollectionResource extends Resource
 {
     protected static ?string $model = collection::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+
     protected static ?string $navigationLabel = 'Collection';
+
     protected static ?int $navigationSort = 5;
+
     protected static ?string $breadcrumb = 'Collection';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -48,13 +53,6 @@ class CollectionResource extends Resource
                             ->columnSpan(1)
                             ->placeholder('Select UCR Reference ID')
                             ->label('UCR Reference ID')
-                            ->helperText(function ($record) {
-                                if ($record) {
-                                    return null;
-                                } else {
-                                    return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
-                                }
-                            })
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $accrual = $get('ucr_ref_id');
                                 if ($accrual) {
@@ -70,6 +68,7 @@ class CollectionResource extends Resource
                                     $set('contract_type', $accrual->contract_type);
                                     $set('accrual_amount', $accrual->accrual_amount);
                                     $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                                    $set('accruals_attachment', $accrual->accruals_attachment);
                                 } else {
                                     $set('client_name', null);
                                     $set('person_in_charge', null);
@@ -88,6 +87,7 @@ class CollectionResource extends Resource
                                     $set('bill_date_submitted', null);
                                     $set('bill_date_approved', null);
                                     $set('UCR_Park_Doc', null);
+                                    $set('accruals_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -108,7 +108,6 @@ class CollectionResource extends Resource
                             })
                             ->disabledOn('edit'),
                         TextInput::make('client_name')
-
                             ->label('Client Name')
                             ->reactive()
                             ->readOnly(),
@@ -180,6 +179,25 @@ class CollectionResource extends Resource
                             ->readOnly()
                             ->reactive()
                             ->columnspan(2),
+                        FileUpload::make('accruals_attachment')
+                            ->label('Accrual Attachments')
+                            ->columnSpanFull()
+                            ->multiple()
+                            ->minFiles(0)
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('public')
+                            ->directory('Accrual_Attachments')
+                            ->visibility('public')
+                            ->deletable(false)
+                            ->downloadable()
+                            ->openable()
+                            ->reorderable()
+                            ->disabled()
+                            ->uploadingMessage('Uploading Accrual attachment...'),
                     ])->columns(2)->columnspan(2),
                 Section::make('Draft Bill Details')
                     ->schema([
@@ -193,13 +211,6 @@ class CollectionResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Draftbill No. already exists.',
                             ])
-                            ->helperText(function ($record) {
-                                if ($record) {
-                                    return null;
-                                } else {
-                                    return new HtmlString('Select the <strong>Draft Bill ID</strong> to auto-fill the fields.');
-                                }
-                            })
                             ->searchable()
                             ->preload()
                             ->live()
@@ -216,12 +227,14 @@ class CollectionResource extends Resource
                                     $set('bill_date_created', $draft->bill_date_created);
                                     $set('bill_date_submitted', $draft->bill_date_submitted);
                                     $set('bill_date_approved', $draft->bill_date_approved);
+                                    $set('bill_attachment', $draft->bill_attachment);
                                 } else {
                                     $set('draftbill_amount', null);
                                     $set('draftbill_particular', null);
                                     $set('bill_date_created', null);
                                     $set('bill_date_submitted', null);
                                     $set('bill_date_approved', null);
+                                    $set('bill_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -233,14 +246,14 @@ class CollectionResource extends Resource
                                     $set('bill_date_created', $draft->bill_date_created);
                                     $set('bill_date_submitted', $draft->bill_date_submitted);
                                     $set('bill_date_approved', $draft->bill_date_approved);
+                                    $set('bill_attachment', $draft->bill_attachment);
                                 }
                             })
                             ->disabled('urc_ref_id' === null)
                             ->native(false)
                             ->disabledOn('edit'),
                         TextInput::make('draftbill_number')
-                            ->label('Draftbill No.')
-                            ->readOnly(),
+                            ->label('Draftbill No.'),
                         TextInput::make('draftbill_amount')
                             ->label('Draftbill Amount')
                             ->prefix('₱')
@@ -258,6 +271,24 @@ class CollectionResource extends Resource
                             ->label('Draftbill Particular')
                             ->columnSpan(2)
                             ->readOnly(),
+                        FileUpload::make('bill_attachment')
+                            ->label('Draft Bill Attachment')
+                            ->deletable(false)
+                            ->multiple()
+                            ->minFiles(0)
+                            ->reorderable()
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('public')
+                            ->directory('Draftbill_Attachments')
+                            ->visibility('public')
+                            ->downloadable()
+                            ->openable()
+                            ->columnSpanFull()
+                            ->disabled(),
                     ])->columns(2)->columnspan(2),
                 Section::make('Invoice Details')
                     ->schema([
@@ -271,15 +302,6 @@ class CollectionResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Accounting Document already exists.',
                             ])
-                            ->helperText(function ($record) {
-                                if ($record) {
-                                    // Hide the helper text in edit mode
-                                    return null;
-                                } else {
-                                    // Show the helper text in create mode
-                                    return new HtmlString('Select <strong>Invoice ID</strong> to auto-fill the fields.');
-                                }
-                            })
                             ->label('Invoice ID')
                             ->placeholder('Select Invoice ID')
                             ->searchable()
@@ -302,6 +324,7 @@ class CollectionResource extends Resource
                                     $set('invoice_posting_date', $invoice->invoice_posting_date);
                                     $set('invoice_posting_amount', $invoice->invoice_posting_amount);
                                     $set('invoice_date_forwarded', $invoice->invoice_date_forwarded);
+                                    $set('invoice_attachment', $invoice->invoice_attachment);
                                 } else {
                                     $set('reversal_doc', null);
                                     $set('gr_amount', null);
@@ -315,6 +338,7 @@ class CollectionResource extends Resource
                                     $set('invoice_posting_date', null);
                                     $set('invoice_posting_amount', null);
                                     $set('invoice_date_forwarded', null);
+                                    $set('invoice_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -332,6 +356,7 @@ class CollectionResource extends Resource
                                     $set('invoice_posting_date', $invoice->invoice_posting_date);
                                     $set('invoice_posting_amount', $invoice->invoice_posting_amount);
                                     $set('invoice_date_forwarded', $invoice->invoice_date_forwarded);
+                                    $set('invoice_attachment', $invoice->invoice_attachment);
                                 }
                             })
                             ->native(false)
@@ -377,6 +402,35 @@ class CollectionResource extends Resource
                         DatePicker::make('invoice_posting_date')
                             ->label('Posting Date')
                             ->readOnly(),
+                        FileUpload::make('invoice_attachment')
+                            ->label('Attachments')
+                            ->deletable(true)
+                            ->multiple()
+                            ->disabled()
+                            ->minFiles(0)
+                            ->reorderable()
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('public')
+                            ->directory('Invoice_Attachments')
+                            ->visibility('public')
+                            ->downloadable()
+                            ->openable()
+                            ->columnSpan(2)
+                            ->deletable()
+                        // #IMAGE Settings
+                        // ->image()
+                        // ->imageEditor()
+                        // ->imageResizeMode('force')
+                        // ->imageCropAspectRatio('8:5')
+                        // ->imageResizeTargetWidth('1920')
+                        // ->imageResizeTargetHeight('1080')
+                        // ->imageEditorViewportWidth('1920')
+                        // ->imageEditorViewportHeight('1080'),
+                        ,
                     ])->columnspan(2)
                     ->columns(2),
             ])->columns(6);
@@ -387,8 +441,6 @@ class CollectionResource extends Resource
         return $table
             ->emptyStateHeading('No Collection yet')
             ->emptyStateDescription('Once you create your first collection, it will appear here.')
-            ->paginated([10, 25, 50])
-            ->heading('Active Collection')
             ->columns([
                 //accruals
                 TextColumn::make('accruals.ucr_ref_id')
@@ -405,7 +457,7 @@ class CollectionResource extends Resource
                     ->label('Reversal Document No.')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('invoices.accounting_doc')
+                TextColumn::make('invoices.accounting_document')
                     ->label('Accounting Document No.')
                     ->searchable()
                     ->sortable(),
@@ -431,17 +483,16 @@ class CollectionResource extends Resource
                     ->searchable()
                     ->sortable(),
             ])
-            ->defaultSort('collection.amount_collected', 'desc')
             ->filters([
-
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    //Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
