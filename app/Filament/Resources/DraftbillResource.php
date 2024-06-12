@@ -7,6 +7,7 @@ use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManag
 use App\Models\accrual;
 use App\Models\draftbill;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -34,7 +35,7 @@ class DraftbillResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Accruals Details')
+                Section::make('Accrual Details')
                     ->schema([
                         Select::make('ucr_ref_id')
                             ->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong> to auto-fill the fields.'))
@@ -69,6 +70,7 @@ class DraftbillResource extends Resource
                                     $set('accrual_amount', $accrual->accrual_amount);
                                     $set('date_accrued', $accrual->date_accrued);
                                     $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                                    $set('accruals_attachment', $accrual->accruals_attachment);
                                 } else {
                                     $set('client_name', null);
                                     $set('person_in_charge', null);
@@ -82,6 +84,7 @@ class DraftbillResource extends Resource
                                     $set('accrual_amount', null);
                                     $set('date_accrued', null);
                                     $set('UCR_Park_Doc', null);
+                                    $set('accruals_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -99,6 +102,7 @@ class DraftbillResource extends Resource
                                     $set('accrual_amount', $accrual->accrual_amount);
                                     $set('date_accrued', $accrual->date_accrued);
                                     $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                                    $set('accruals_attachment', $accrual->accruals_attachment);
                                 }
                             })
                             ->disabledOn('edit'),
@@ -206,6 +210,24 @@ class DraftbillResource extends Resource
                             ->label('UCR Park Document No.')
                             ->reactive()
                             ->readOnly(),
+                        FileUpload::make('accruals_attachment')
+                            ->label('Accrual Attachments')
+                            ->multiple()
+                            ->minFiles(0)
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('public')
+                            ->directory('Accrual_Attachments')
+                            ->visibility('public')
+                            ->deletable(false)
+                            ->disabled()
+                            ->downloadable()
+                            ->openable()
+                            ->reorderable()
+                            ->uploadingMessage('Uploading Accrual attachment...')
                     ])->columnspan(1),
             ])->columns(3);
     }

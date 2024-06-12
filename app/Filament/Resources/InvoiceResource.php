@@ -9,6 +9,7 @@ use App\Models\draftbill;
 use App\Models\draftbilldetails;
 use App\Models\invoice;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -28,9 +29,13 @@ use Illuminate\Support\HtmlString;
 class InvoiceResource extends Resource
 {
     protected static ?string $model = invoice::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+
     protected static ?string $navigationLabel = 'Invoice';
+
     protected static ?int $navigationSort = 4;
+
     protected static ?string $breadcrumb = 'Invoice';
 
     public static function form(Form $form): Form
@@ -75,6 +80,7 @@ class InvoiceResource extends Resource
                                     $set('contract_type', $accrual->contract_type);
                                     $set('accrual_amount', $accrual->accrual_amount);
                                     $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                                    $set('accruals_attachment', $accrual->accruals_attachment);
                                 } else {
                                     $set('client_name', null);
                                     $set('person_in_charge', null);
@@ -86,12 +92,15 @@ class InvoiceResource extends Resource
                                     $set('business_unit', null);
                                     $set('contract_type', null);
                                     $set('accrual_amount', null);
+                                    $set('UCR_Park_Doc', null);
                                     $set('draftbill_no', null);
                                     $set('draftbill_amount', null);
                                     $set('draftbill_particular', null);
                                     $set('bill_date_created', null);
                                     $set('bill_date_submitted', null);
                                     $set('bill_date_approved', null);
+                                    $set('bill_attachment', null);
+
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -108,6 +117,7 @@ class InvoiceResource extends Resource
                                     $set('contract_type', $accrual->contract_type);
                                     $set('accrual_amount', $accrual->accrual_amount);
                                     $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                                    $set('accruals_attachment', $accrual->accruals_attachment);
                                 }
                             }),
                         TextInput::make('client_name')
@@ -193,6 +203,25 @@ class InvoiceResource extends Resource
                             ->columnSpanFull()
                             //->placeholder('Accrual Amount')
                             ->inputMode('decimal'),
+                        FileUpload::make('accruals_attachment')
+                            ->label('Accrual Attachments')
+                            ->columnSpanFull()
+                            ->multiple()
+                            ->minFiles(0)
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('public')
+                            ->directory('Accrual_Attachments')
+                            ->visibility('public')
+                            ->deletable(false)
+                            ->downloadable()
+                            ->openable()
+                            ->reorderable()
+                            ->disabled()
+                            ->uploadingMessage('Uploading Accrual attachment...'),
                     ])->columnspan(2)->columns(2),
                 Section::make('Draft Bill Details')
                     ->schema([
@@ -234,6 +263,7 @@ class InvoiceResource extends Resource
                                     $set('bill_date_created', $draft->bill_date_created);
                                     $set('bill_date_submitted', $draft->bill_date_submitted);
                                     $set('bill_date_approved', $draft->bill_date_approved);
+                                    $set('bill_attachment', $draft->bill_attachment);
                                 } else {
                                     $set('draftbill_amount', null);
                                     $set('draftbill_particular', null);
@@ -257,6 +287,7 @@ class InvoiceResource extends Resource
                                     $set('bill_date_created', null);
                                     $set('bill_date_submitted', null);
                                     $set('bill_date_approved', null);
+                                    $set('bill_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -268,6 +299,7 @@ class InvoiceResource extends Resource
                                     $set('bill_date_created', $draft->bill_date_created);
                                     $set('bill_date_submitted', $draft->bill_date_submitted);
                                     $set('bill_date_approved', $draft->bill_date_approved);
+                                    $set('bill_attachment', $draft->bill_attachment);
                                 }
                             }),
                         TextInput::make('draftbill_number')
@@ -293,6 +325,24 @@ class InvoiceResource extends Resource
                             ->label('Draftbill Particular')
                             ->columnSpan(2)
                             ->readOnly(),
+                        FileUpload::make('bill_attachment')
+                            ->label('Draft Bill Attachment')
+                            ->deletable(false)
+                            ->multiple()
+                            ->minFiles(0)
+                            ->reorderable()
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            //Storage Setting
+                            ->preserveFilenames()
+                            ->previewable()
+                            ->maxSize(100000) //100MB
+                            ->disk('public')
+                            ->directory('Draftbill_Attachments')
+                            ->visibility('public')
+                            ->downloadable()
+                            ->openable()
+                            ->columnSpanFull()
+                            ->disabled(),
                     ])->columnspan(2)->columns(2),
 
             ])->columns(4);

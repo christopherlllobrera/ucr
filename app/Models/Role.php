@@ -11,8 +11,5 @@ use Spatie\Activitylog\LogOptions;
 class Role extends ModelsRole
 {
     use HasFactory;
-
-
-
 }
 

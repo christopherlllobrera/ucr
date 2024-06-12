@@ -3,9 +3,10 @@
 namespace App\Filament\Resources\DraftbillResource\Pages;
 
 use Filament\Actions;
+use Filament\Pages\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\DraftbillResource;
-use Filament\Notifications\Notification;
 
 class EditDraftbill extends EditRecord
 {
@@ -25,8 +26,11 @@ class EditDraftbill extends EditRecord
                         ->body( $this->record->accrual->ucr_ref_id . ' has been deleted successfully')
                         ->iconColor('success')
                         ->duration(5000)
-                        
-                )
+                ),
+                Action::make('Home')
+                ->label('Return')
+                ->icon('heroicon-o-wallet')
+                ->url(fn ($record) => DraftbillResource::getUrl('index')),
         ];
     }
     protected function getFormActions(): array
@@ -34,6 +38,7 @@ class EditDraftbill extends EditRecord
         return [
             $this->getSaveFormAction()->hidden(),
             $this->getCancelFormAction()->hidden(),
+
         ];
     }
 }

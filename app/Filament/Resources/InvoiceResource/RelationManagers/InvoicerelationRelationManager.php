@@ -15,12 +15,14 @@ use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Pages\Actions\Action;
 
 class InvoicerelationRelationManager extends RelationManager
 {
     protected static string $relationship = 'invoicerelation';
     protected static ?string $title = 'Invoice Details';
     protected static bool $isLazy = false;
+    protected static ?string $label = 'Invoice';
 
     public function form(Form $form): Form
     {
@@ -80,7 +82,7 @@ class InvoicerelationRelationManager extends RelationManager
                             DatePicker::make('invoice_posting_date')
                                 ->label('Posting Date')
                                 ->columnSpan(1),
-                                FileUpload::make('invoice_attachment')
+                            FileUpload::make('invoice_attachment')
                                 ->label('Attachments')
                                 ->deletable(true)
                                 ->multiple()
@@ -185,6 +187,8 @@ class InvoicerelationRelationManager extends RelationManager
                                 ->iconColor('success')
                                 ->duration(5000),
                         )
+                        //->keyBindings(['command+s', 'ctrl+s']),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -196,4 +200,5 @@ class InvoicerelationRelationManager extends RelationManager
             //     ]),
         ]);
     }
+
 }
