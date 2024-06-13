@@ -2,28 +2,29 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CollectionResource\Pages;
-use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
+use Filament\Tables;
 use App\Models\accrual;
-use App\Models\collection;
-use App\Models\draftbill;
-use App\Models\draftbilldetails;
 use App\Models\invoice;
-use App\Models\invoicedetails;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
+use App\Models\draftbill;
+use App\Models\collection;
 use Filament\Tables\Table;
+use App\Models\invoicedetails;
+use App\Models\draftbilldetails;
+use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use App\Filament\Resources\CollectionResource\Pages;
 use Illuminate\Support\Collection as BaseCollection;
+use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
 
 class CollectionResource extends Resource
 {
@@ -53,6 +54,13 @@ class CollectionResource extends Resource
                             ->columnSpan(1)
                             ->placeholder('Select UCR Reference ID')
                             ->label('UCR Reference ID')
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    return null;
+                                } else {
+                                    return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
+                                }
+                            })
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $accrual = $get('ucr_ref_id');
                                 if ($accrual) {
@@ -211,6 +219,13 @@ class CollectionResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Draftbill No. already exists.',
                             ])
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    return null;
+                                } else {
+                                    return new HtmlString('Select the <strong>Draft Bill ID</strong> to auto-fill the fields.');
+                                }
+                            })
                             ->searchable()
                             ->preload()
                             ->live()
@@ -253,7 +268,8 @@ class CollectionResource extends Resource
                             ->native(false)
                             ->disabledOn('edit'),
                         TextInput::make('draftbill_number')
-                            ->label('Draftbill No.'),
+                            ->label('Draftbill No.')
+                            ->readOnly(),
                         TextInput::make('draftbill_amount')
                             ->label('Draftbill Amount')
                             ->prefix('₱')
@@ -302,6 +318,15 @@ class CollectionResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Accounting Document already exists.',
                             ])
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    // Hide the helper text in edit mode
+                                    return null;
+                                } else {
+                                    // Show the helper text in create mode
+                                    return new HtmlString('Select <strong>Invoice ID</strong> to auto-fill the fields.');
+                                }
+                            })
                             ->label('Invoice ID')
                             ->placeholder('Select Invoice ID')
                             ->searchable()
@@ -441,6 +466,8 @@ class CollectionResource extends Resource
         return $table
             ->emptyStateHeading('No Collection yet')
             ->emptyStateDescription('Once you create your first collection, it will appear here.')
+            ->paginated([10, 25, 50])
+            ->heading('Active Collection')
             ->columns([
                 //accruals
                 TextColumn::make('accruals.ucr_ref_id')

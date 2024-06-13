@@ -78,20 +78,24 @@ class AccrualsResource extends Resource
                     ->label('Client')
                     ->placeholder('Client')
                     ->maxLength(50)
+                    ->required()
                     ->disabledOn(Pages\EditAccrualsParkDoc::class),
                 TextInput::make('person_in_charge')
                     ->label('Person-in-charge')
                     ->maxLength(32)
+                    ->required()
                     ->disabledOn(Pages\EditAccrualsParkDoc::class)
                     ->placeholder('Person-in-charge'),
                 TextInput::make('wbs_no')
                     ->label('WBS No.')
                     ->maxLength(25)
+                    ->required()
                     ->disabledOn(Pages\EditAccrualsParkDoc::class)
                     ->placeholder('WBS No.'),
                 TextArea::make('particulars')
                     ->label('Particulars')
                     ->maxLength(255)
+                    ->required()
                     ->disabledOn(Pages\EditAccrualsParkDoc::class)
                     ->placeholder('Particulars')
                     ->columnSpan('full')
@@ -112,6 +116,7 @@ class AccrualsResource extends Resource
                                 ->label('Accrual Amount')
                                 ->prefix('₱')
                                 ->numeric()
+                                ->required()
                                 ->minValue(1)
                                 ->inputMode('decimal')
                                 ->disabledOn(Pages\EditAccrualsParkDoc::class)
@@ -120,6 +125,7 @@ class AccrualsResource extends Resource
                         FileUpload::make('accruals_attachment')
                                 ->label('Attachments')
                                 ->multiple()
+                                ->required()
                                 ->minFiles(0)
                                 ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                                 //Storage Setting
@@ -150,15 +156,18 @@ class AccrualsResource extends Resource
                     ->schema([
                         DatePicker::make('period_started')
                             ->label('Period started')
+                            ->required()
                             ->disabledOn(Pages\EditAccrualsParkDoc::class)
                             ->minDate(now()->subYears(3)),
                         DatePicker::make('period_ended')
                             ->label('Period ended')
+                            ->required()
                             ->disabledOn(Pages\EditAccrualsParkDoc::class)
                             ->minDate(now()->subYears(3))
                             ->afterOrEqual('period_started'),
                         Select::make('month')
                             ->label('Month')
+                            ->required()
                             ->disabledOn(Pages\EditAccrualsParkDoc::class)
                             ->options([
                                 'January' => 'January',
@@ -177,6 +186,7 @@ class AccrualsResource extends Resource
 
                         Select::make('contract_type')
                                 ->label('Contract Type')
+                                ->required()
                                 ->disabledOn(Pages\EditAccrualsParkDoc::class)
                                 ->options([
                                     'LSCP' => 'LCSP',
@@ -184,6 +194,7 @@ class AccrualsResource extends Resource
                                 ]),
                         Select::make('business_unit')
                                 ->label('Business Unit')
+                                ->required()
                                 ->disabledOn(Pages\EditAccrualsParkDoc::class)
                                 ->options([
                                     'Facility Services' => 'Facility Services',
@@ -195,11 +206,13 @@ class AccrualsResource extends Resource
                         TextInput::make('UCR_Park_Doc')
                             ->label('UCR Park Document No.')
                             ->placeholder('UCR Park Document No.')
+                            ->required()
                             ->numeric()
                             ->required(fn (string $operation): bool => $operation === 'edit')
                             ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
                         DatePicker::make('date_accrued')
                             ->label('Date Accrued in SAP')
+                            ->required()
                             ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class])
                     ])->columnspan(1),
             ])
