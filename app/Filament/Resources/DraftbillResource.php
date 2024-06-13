@@ -26,9 +26,13 @@ use Illuminate\Support\HtmlString;
 class DraftbillResource extends Resource
 {
     protected static ?string $model = Draftbill::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
+
     protected static ?string $navigationLabel = 'Draft Bill';
+
     protected static ?string $breadcrumb = 'Draft Bill';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -38,7 +42,16 @@ class DraftbillResource extends Resource
                 Section::make('Accrual Details')
                     ->schema([
                         Select::make('ucr_ref_id')
-                            ->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong> to auto-fill the fields.'))
+                            ->helperText(function ($record) {
+                                if ($record) {
+                                    // Hide the helper text in edit mode
+                                    return null;
+                                } else {
+                                    // Show the helper text in create mode
+                                    return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
+                                }
+                            })
+                            //->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong> to auto-fill the fields.'))
                             ->relationship('accruals', 'ucr_ref_id')
                             ->required()
                             ->searchable()
@@ -214,7 +227,7 @@ class DraftbillResource extends Resource
                             ->label('Accrual Attachments')
                             ->multiple()
                             ->minFiles(0)
-                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf' ,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+                            ->acceptedFileTypes(['image/*', 'application/vnd.ms-excel', 'application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                             //Storage Setting
                             ->preserveFilenames()
                             ->previewable()
@@ -227,7 +240,7 @@ class DraftbillResource extends Resource
                             ->downloadable()
                             ->openable()
                             ->reorderable()
-                            ->uploadingMessage('Uploading Accrual attachment...')
+                            ->uploadingMessage('Uploading Accrual attachment...'),
                     ])->columnspan(1),
             ])->columns(3);
     }
