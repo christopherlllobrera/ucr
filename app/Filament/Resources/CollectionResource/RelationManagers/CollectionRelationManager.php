@@ -16,8 +16,11 @@ use Filament\Tables\Table;
 class CollectionRelationManager extends RelationManager
 {
     protected static bool $isLazy = false;
+
     protected static string $relationship = 'collection';
+
     protected static ?string $title = 'Collection Details';
+
     protected static ?string $label = 'Collection';
 
     public function form(Form $form): Form
@@ -29,20 +32,24 @@ class CollectionRelationManager extends RelationManager
 
                         TextInput::make('amount_collected')
                             ->label('Amount Collected')
+                            ->placeholder('Amount Collected')
                             ->maxLength(32)
                             ->prefix('₱')
                             ->numeric()
                             ->minValue(1)
                             ->inputMode('decimal')
-                            ->placeholder('Amount Collected'),
+                            ->required(),
                         TextInput::make('or_number')
-                            ->label('OR No.')
+                            ->label('Official Receipt No.')
+                            ->placeholder('OR No.')
                             ->maxLength(32)
-                            ->placeholder('OR No.'),
+                            ->required(),
                         DatePicker::make('tr_posting_date')
-                            ->label('TR Posting Date'),
+                            ->label('TR Posting Date')
+                            ->required(),
                         FileUpload::make('collection_attachment')
                             ->label('Attachments')
+                            ->required()
                             ->deletable(true)
                             ->multiple()
                             ->minFiles(0)

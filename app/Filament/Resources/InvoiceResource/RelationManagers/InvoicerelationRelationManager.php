@@ -33,57 +33,69 @@ class InvoicerelationRelationManager extends RelationManager
                 TextInput::make('reversal_doc')
                     ->label('Reversal Document')
                     ->placeholder('Reversal Document')
+                    ->required()
                     ->maxLength(32),
                 TextInput::make('gr_amount')
                     ->label('Good Receipt Amount')
                     ->prefix('₱')
+                    ->required()
                     ->numeric()
                     ->inputMode('decimal')
                     ->minValue(1)
                     ->placeholder('GR Amount'),
                 TextInput::make('accounting_document')
                     ->label('Accounting Document')
+                    ->placeholder('Accounting Document')
+                    ->required()
                     ->maxLength(32)
-                    ->unique(ignoreRecord:true)
-                    ->placeholder('Accounting Document'),
+                    ->unique(ignoreRecord:true),
                 TextInput::make('pojo_no')
                     ->label('PO/JO No.')
-                    ->placeholder('PO/JO No.'),
+                    ->placeholder('PO/JO No.')
+                    ->required(),
                 TextInput::make('gr_no_meralco')
                     ->label('GR No. created by Meralco')
-                    ->maxLength(50)
-                    ->placeholder('Good Receipt NO. created by Meralco'),
+                    ->placeholder('Good Receipt NO. created by Meralco')
+                    ->required()
+                    ->maxLength(50),
                 TextInput::make('billing_statement')
                     ->label('Billing Statement No.')
+                    ->placeholder('Billing Statement No.')
                     ->maxLength(50)
-                    ->placeholder('Billing Statement No.'),
+                    ->required(),
                 ])->columnspan(2)
                   ->columns(2),
                 Section::make('')
                     ->schema([
                         DatePicker::make('date_reversal')
-                            ->label('Date Reversal'),
+                            ->label('Date Reversal')
+                            ->required(),
                         DatePicker::make('invoice_date_received')
-                            ->label('Date Received'),
+                            ->label('Date Received')
+                            ->required(),
                         DatePicker::make('invoice_date_approved')
-                                ->label('Date Approved (RCA)')
-                                ->placeholder('Business Unit'),
+                            ->label('Date Approved (RCA)')
+                            ->placeholder('Business Unit')
+                            ->required(),
                     ])->columnspan(1),
                 Section::make('')
                         ->schema([
                             TextInput::make('invoice_posting_amount')
                                 ->label('Posted Amount')
+                                ->placeholder('Posted Amount')
+                                ->required()
                                 ->prefix('₱')
                                 ->numeric()
                                 ->minValue(1)
-                                ->placeholder('Posted Amount')
                                 ->inputMode('decimal')
                                 ->columnSpan(2),
                             DatePicker::make('invoice_posting_date')
                                 ->label('Posting Date')
+                                ->required()
                                 ->columnSpan(1),
                             FileUpload::make('invoice_attachment')
                                 ->label('Attachments')
+                                ->required()
                                 ->deletable(true)
                                 ->multiple()
                                 ->minFiles(0)
@@ -99,7 +111,7 @@ class InvoicerelationRelationManager extends RelationManager
                                 ->downloadable()
                                 ->openable()
                                 ->columnSpan(2)
-                                ->deletable()
+                                ->deletable(),
                                 // #IMAGE Settings
                                 // ->image()
                                 // ->imageEditor()
@@ -109,11 +121,10 @@ class InvoicerelationRelationManager extends RelationManager
                                 // ->imageResizeTargetHeight('1080')
                                 // ->imageEditorViewportWidth('1920')
                                 // ->imageEditorViewportHeight('1080'),
-                                ,
                             DatePicker::make('invoice_date_forwarded')
                                 ->label('Date Forwarded to Client')
+                                ->required()
                                 ->columnSpan(1),
-
                         ])->columns(3),
                     // Section::make()
                     //     ->schema([

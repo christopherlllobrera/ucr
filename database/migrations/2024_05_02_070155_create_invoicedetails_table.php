@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('invoicedetails', function (Blueprint $table) {
             $table->id();
-            $table->string('reversal_doc')->nullable();
+            $table->string('reversal_doc');
             $table->double('gr_amount')->nullable();
-            $table->date('date_reversal')->nullable();
-            $table->string('accounting_document')->nullable();
-            $table->date('invoice_date_received')->nullable();
-            $table->string('pojo_no')->nullable();
-            $table->string('gr_no_meralco')->nullable();
-            $table->string('billing_statement')->nullable();
-            $table->date('invoice_date_approved')->nullable();
-            $table->date('invoice_posting_date')->nullable();
-            $table->double('invoice_posting_amount')->nullable();
-            $table->date('invoice_date_forwarded')->nullable();
+            $table->date('date_reversal');
+            $table->string('accounting_document');
+            $table->date('invoice_date_received');
+            $table->string('pojo_no');
+            $table->string('gr_no_meralco');
+            $table->string('billing_statement');
+            $table->date('invoice_date_approved');
+            $table->date('invoice_posting_date');
+            $table->double('invoice_posting_amount');
+            $table->date('invoice_date_forwarded');
             $table->string('invoice_attachment')->nullable();
             $table->timestamps();
         });

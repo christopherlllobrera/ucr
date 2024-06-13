@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('collectiondetails', function (Blueprint $table) {
             $table->id();
-            $table->double('amount_collected')->nullable();
-            $table->date('tr_posting_date')->nullable();
-            $table->string('or_number')->nullable();
+            $table->double('amount_collected');
+            $table->date('tr_posting_date');
+            $table->string('or_number');
             $table->string('collection_attachment')->nullable();
             $table->timestamps();
         });

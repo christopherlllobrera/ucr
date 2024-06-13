@@ -230,7 +230,7 @@ class InvoiceResource extends Resource
                             ->placeholder('Select Draft Bill No.')
                             ->options(fn (Get $get): Collection => draftbill::query()
                                 ->where('ucr_ref_id', $get('ucr_ref_id'))->get()
-                                ->pluck('ucr_ref_id', 'id'))
+                                ->pluck('id', 'id'))
                                           //$this->record->draftbills->draftbill_no
                             //->relationship('draftbilldetails', 'draftbill_no')
                             ->required()

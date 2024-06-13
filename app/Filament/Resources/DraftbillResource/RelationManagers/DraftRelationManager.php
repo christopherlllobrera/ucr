@@ -36,11 +36,13 @@ class DraftRelationManager extends RelationManager
                             ->label('Draft Bill No.')
                             ->placeholder('Draft Bill No.')
                             ->unique(ignoreRecord: true)
+                            ->required()
                             ->columnSpan(1),
                         TextInput::make('draftbill_amount')
                             ->label('Draft Bill Amount')
                             ->placeholder('Draft Bill Amount')
                             ->inputMode('decimal')
+                            ->required()
                             ->prefix('₱')
                             ->numeric()
                             ->minValue(1)
@@ -50,6 +52,7 @@ class DraftRelationManager extends RelationManager
                             ->columnSpan(3)
                             ->placeholder('Draft Bill Particular')
                             ->reactive()
+                            ->required()
                             ->hint(function ($state) {
                                 $singleSmsCharactersCount = 255;
                                 $charactersCount = strlen($state);
@@ -64,6 +67,7 @@ class DraftRelationManager extends RelationManager
                         FileUpload::make('bill_attachment')
                             ->label('Attachment')
                             ->deletable(true)
+                            ->required()
                             ->multiple()
                             ->minFiles(0)
                             ->reorderable()
@@ -82,11 +86,14 @@ class DraftRelationManager extends RelationManager
                 Section::make('Draft Bill Timeline')
                     ->schema([
                         DatePicker::make('bill_date_created')
-                            ->label('Date Created'),
+                            ->label('Date Created')
+                            ->required(),
                         DatePicker::make('bill_date_submitted')
-                            ->label('Date Submitted to Client'),
+                            ->label('Date Submitted to Client')
+                            ->required(),
                         DatePicker::make('bill_date_approved')
-                            ->label('Date Approved by Client'),
+                            ->label('Date Approved by Client')
+                            ->required(),
                     ])->columnspan(1),
             ])->columns(3);
     }
@@ -145,7 +152,7 @@ class DraftRelationManager extends RelationManager
                             ->iconColor('success')
                             ->duration(5000),
                     ),
-                
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
