@@ -25,6 +25,7 @@ use Filament\Forms\Components\FileUpload;
 use App\Filament\Resources\CollectionResource\Pages;
 use Illuminate\Support\Collection as BaseCollection;
 use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
+use Filament\Support\RawJs;
 
 class CollectionResource extends Resource
 {
@@ -184,6 +185,8 @@ class CollectionResource extends Resource
                         TextInput::make('accrual_amount')
                             ->label('Accrual Amount')
                             ->prefix('₱')
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->readOnly()
                             ->reactive()
                             ->columnspan(2),
@@ -273,7 +276,9 @@ class CollectionResource extends Resource
                         TextInput::make('draftbill_amount')
                             ->label('Draftbill Amount')
                             ->prefix('₱')
-                            ->readOnly(),
+                            ->readOnly()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(','),
                         DatePicker::make('bill_date_created')
                             ->label('Draft Bill Date Created')
                             ->readOnly(),
@@ -395,7 +400,9 @@ class CollectionResource extends Resource
                         TextInput::make('gr_amount')
                             ->label('Good Receipt Amount')
                             ->prefix('₱')
-                            ->readOnly(),
+                            ->readOnly()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(','),
                         TextInput::make('pojo_no')
                             ->readOnly()
                             ->label('Purchase Order No. / Job Order No.'),
@@ -409,7 +416,9 @@ class CollectionResource extends Resource
                             ->label('Posted Amount')
                             ->prefix('₱')
                             ->inputMode('decimal')
-                            ->readOnly(),
+                            ->readOnly()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(','),
                         DatePicker::make('date_reversal')
                             ->label('Date Reversal')
                             ->readOnly(),

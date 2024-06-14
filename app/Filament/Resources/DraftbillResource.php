@@ -22,6 +22,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
+use Filament\Support\RawJs;
 
 class DraftbillResource extends Resource
 {
@@ -121,19 +122,19 @@ class DraftbillResource extends Resource
                             ->disabledOn('edit'),
                         TextInput::make('client_name')
                             ->label('Client Name')
-                            ->maxLength(50)
+                            //->maxLength(50)
                             ->reactive()
                             //->placeholder('Client Name')
                             ->readOnly(),
                         TextInput::make('person_in_charge')
                             ->label('Person-in-charge')
-                            ->maxLength(32)
+                            //->maxLength(32)
                             ->reactive()
                             //->placeholder('Person-in-charge')
                             ->readOnly(),
                         TextInput::make('wbs_no')
                             ->label('WBS No.')
-                            ->maxLength(32)
+                            //->maxLength(32)
                             ->reactive()
                             //->placeholder('WBS No.')
                             ->readOnly(),
@@ -158,7 +159,7 @@ class DraftbillResource extends Resource
                             ->disabled(),
                         TextArea::make('particulars')
                             ->label('Particulars')
-                            ->maxLength(255)
+                            //->maxLength(255)
                             ->reactive()
                             ->autosize(true)
                             ->rows(2)
@@ -180,6 +181,9 @@ class DraftbillResource extends Resource
                             ->label('Accrual Amount')
                             ->prefix('₱')
                             ->numeric()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->inputMode('decimal')
                             ->minValue(1)
                             ->readOnly()
                             ->reactive()

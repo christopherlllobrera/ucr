@@ -25,6 +25,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
+use Filament\Support\RawJs;
 
 class InvoiceResource extends Resource
 {
@@ -200,6 +201,8 @@ class InvoiceResource extends Resource
                             ->minValue(1)
                             ->readOnly()
                             ->reactive()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->columnSpanFull()
                             //->placeholder('Accrual Amount')
                             ->inputMode('decimal'),
@@ -310,6 +313,8 @@ class InvoiceResource extends Resource
                             ->inputMode('decimal')
                             ->prefix('₱')
                             ->numeric()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->minValue(1)
                             ->readOnly(),
                         DatePicker::make('bill_date_created')
