@@ -12,6 +12,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
 
 class CollectionRelationManager extends RelationManager
 {
@@ -34,6 +35,8 @@ class CollectionRelationManager extends RelationManager
                             ->label('Amount Collected')
                             ->placeholder('Amount Collected')
                             ->maxLength(32)
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->prefix('₱')
                             ->numeric()
                             ->minValue(1)

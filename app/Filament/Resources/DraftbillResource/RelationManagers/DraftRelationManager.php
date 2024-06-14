@@ -14,6 +14,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Http\RedirectResponse;
+use Filament\Support\RawJs;
 
 
 class DraftRelationManager extends RelationManager
@@ -41,6 +42,8 @@ class DraftRelationManager extends RelationManager
                         TextInput::make('draftbill_amount')
                             ->label('Draft Bill Amount')
                             ->placeholder('Draft Bill Amount')
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->inputMode('decimal')
                             ->required()
                             ->prefix('₱')

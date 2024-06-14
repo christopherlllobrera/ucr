@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Pages\Actions\Action;
+use Filament\Support\RawJs;
 
 class InvoicerelationRelationManager extends RelationManager
 {
@@ -39,6 +40,8 @@ class InvoicerelationRelationManager extends RelationManager
                     ->label('Good Receipt Amount')
                     ->prefix('₱')
                     ->required()
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->numeric()
                     ->inputMode('decimal')
                     ->minValue(1)
@@ -85,6 +88,8 @@ class InvoicerelationRelationManager extends RelationManager
                                 ->placeholder('Posted Amount')
                                 ->required()
                                 ->prefix('₱')
+                                ->mask(RawJs::make('$money($input)'))
+                                ->stripCharacters(',')
                                 ->numeric()
                                 ->minValue(1)
                                 ->inputMode('decimal')
@@ -158,6 +163,7 @@ class InvoicerelationRelationManager extends RelationManager
                     ->label('GR Amount')
                     ->searchable()
                     ->sortable()
+                    ->money('Php')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('gr_no_meralco')
                     ->label('GR No. Created by Meralco')
@@ -177,6 +183,7 @@ class InvoicerelationRelationManager extends RelationManager
                     ->label('Posted Amount')
                     ->searchable()
                     ->sortable()
+                    ->money('Php')
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('invoice_posting_date')
                     ->label('Posting Date')
