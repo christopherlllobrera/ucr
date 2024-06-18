@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\AccrualsResource\Pages;
 
-use Filament\Actions;
-use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
-use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\AccrualsResource;
+use App\Filament\Resources\AccrualsResource\Widgets\AccrualStats;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListAccruals extends ListRecords
 {
     protected static string $resource = AccrualsResource::class;
-
+    protected static ?string $title = 'Accrual';
     protected function getHeaderActions(): array
     {
         return [
@@ -21,7 +21,7 @@ class ListAccruals extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets():array
+    protected function getHeaderWidgets(): array
     {
         return [
             AccrualStats::class,
@@ -31,6 +31,5 @@ class ListAccruals extends ListRecords
     // {
     //     return $query->cursorPaginate(($this->getTableRecordsPerPage() === 'all') ? $query->count() : $this->getTableRecordsPerPage());
     // }
-
 
 }

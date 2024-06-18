@@ -38,14 +38,12 @@ class EditAccruals extends EditRecord
 
     protected function getSavedNotification(): ?Notification
     {
-        $recipient = auth()->user();
         return Notification::make()
             ->success()
             ->title('Accruals Updated')
             ->body( $this->record->ucr_ref_id . ' has been updated successfully')
             ->iconColor('success')
             ->duration(5000)
-            ->sendToDatabase($recipient)
             ->actions([
                 Action::make('View Changes')
                     ->button()
@@ -53,5 +51,19 @@ class EditAccruals extends EditRecord
                     ->icon('heroicon-o-eye'),
             ])
             ->persistent();
+    }
+
+    protected function afterSave(): void
+    {
+        Notification::make()
+            ->title('Accruals updated')
+            ->body( $this->record->ucr_ref_id . ' has been updated successfully')
+            ->actions([
+                Action::make('View Accruals')
+                    ->button()
+                    ->url('/mli/accruals/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-eye'),
+            ])
+            ->sendToDatabase(auth()->user());
     }
 }

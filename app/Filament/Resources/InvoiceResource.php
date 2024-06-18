@@ -19,26 +19,21 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
-use Filament\Support\RawJs;
 
 class InvoiceResource extends Resource
 {
     protected static ?string $model = invoice::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
-
     protected static ?string $navigationLabel = 'Invoice';
-
     protected static ?int $navigationSort = 4;
-
     protected static ?string $breadcrumb = 'Invoice';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -55,7 +50,6 @@ class InvoiceResource extends Resource
                                     return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
                                 }
                             })
-                            //->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.'))
                             ->label('UCR Reference ID')
                             ->placeholder('Select UCR Reference ID')
                             ->disabledOn('edit')
@@ -125,19 +119,16 @@ class InvoiceResource extends Resource
                             ->label('Client Name')
                             ->maxLength(50)
                             ->reactive()
-                        //->placeholder('Client Name')
                             ->readOnly(),
                         TextInput::make('person_in_charge')
                             ->label('Person-in-charge')
                             ->maxLength(32)
                             ->reactive()
-                            //->placeholder('Person-in-charge')
                             ->readOnly(),
                         TextInput::make('wbs_no')
                             ->label('WBS No.')
                             ->maxLength(32)
                             ->reactive()
-                            //->placeholder('WBS No.')
                             ->readOnly(),
                         DatePicker::make('period_started')
                             ->label('Period Started')
@@ -191,7 +182,6 @@ class InvoiceResource extends Resource
                         TextArea::make('particulars')
                             ->label('Particulars')
                             ->reactive()
-                            //->placeholder('Particulars')
                             ->columnSpanFull()
                             ->readOnly(),
                         TextInput::make('accrual_amount')
@@ -204,7 +194,6 @@ class InvoiceResource extends Resource
                             ->mask(RawJs::make('$money($input)'))
                             ->stripCharacters(',')
                             ->columnSpanFull()
-                            //->placeholder('Accrual Amount')
                             ->inputMode('decimal'),
                         FileUpload::make('accruals_attachment')
                             ->label('Accrual Attachments')
@@ -356,8 +345,7 @@ class InvoiceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->emptyStateHeading('No Invoice yet')
-            ->emptyStateDescription('Once you create your first invoice, it will appear here.')
+            ->emptyStateHeading('No Invoice')
             ->paginated([10, 25, 50])
             ->heading('Active Invoice')
             ->striped()
@@ -372,41 +360,48 @@ class InvoiceResource extends Resource
                 TextColumn::make('accruals.UCR_Park_Doc')
                     ->label('UCR Park Doc')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('accruals.accrual_amount')
                     ->label('Accrual Amount')
                     ->money('PHP')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('draftbills.draftbill_amount')
-                    ->label('Draftbill Amount')
+                    ->label('Draft Bill Amount')
                     ->money('PHP')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 BadgeColumn::make('invoicerelation.invoice_posting_amount')
                     ->label('Invoice Posting Amount')
                     ->money('PHP')
                     ->searchable()
                     ->sortable()
-                    ->color('info'),
+                    ->color('info')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('draftbills.draftbill_number')
-                    ->label('Draftbill No.')
+                    ->label('Draft Bill No.')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 BadgeColumn::make('invoicerelation.accounting_document')
                     ->label('Accounting Doc.')
                     ->searchable()
                     ->sortable()
-                    ->color('success'),
+                    ->color('success')
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('invoicerelation.reversal_doc')
                     ->label('Reversal Doc.')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('invoicerelation.billing_statement')
                     ->label('Billing Statement')
                     ->searchable()
-                    ->sortable(),
-
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -415,9 +410,7 @@ class InvoiceResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+
             ]);
     }
 

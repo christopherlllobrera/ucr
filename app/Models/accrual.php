@@ -38,17 +38,10 @@ class accrual extends Model
 
     public function draft()
     {
-        return $this->belongsToMany(draftbilldetails::class, 'draftbill_relation')
-        //->withPivot('id', 'draftbill_id', 'draftbilldetails_id')
-        ;
+        return $this->belongsToMany(draftbilldetails::class, 'draftbill_relation');
     }
     public function draftbillno()
     {
         return $this->belongsTo(draftbilldetails::class, 'draftbill_no');
     }
-
-    // public function draftbilldetails()
-    // {
-    //     return $this->hasManyThrough(draftbilldetails::class, draftbill::class, 'ucr_ref_id', 'draftbill_no', 'ucr_ref_id', 'id');
-    // }
 }

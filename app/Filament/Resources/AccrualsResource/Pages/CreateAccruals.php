@@ -12,9 +12,7 @@ use App\Filament\Resources\AccrualsResource;
 class CreateAccruals extends CreateRecord
 {
     protected static string $resource = AccrualsResource::class;
-
     protected static ?string $title = 'Create Accruals Detail';
-
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
@@ -29,12 +27,24 @@ class CreateAccruals extends CreateRecord
             ->body( $this->record->ucr_ref_id . ' has been created successfully')
             ->iconColor('success')
             ->duration(5000)
-            ->sendToDatabase($recipient)
             ->actions([
                 Action::make('View Accruals')
                     ->button()
                     ->url('/mli/accruals/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
                     ->icon('heroicon-o-eye'),
             ]);
+    }
+    protected function afterCreate(): void
+    {
+        Notification::make()
+            ->title('Accruals Created')
+            ->body( $this->record->ucr_ref_id . ' has been created successfully')
+            ->actions([
+                Action::make('View Accruals')
+                    ->button()
+                    ->url('/mli/accruals/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-eye'),
+            ])
+            ->sendToDatabase(auth()->user());
     }
 }

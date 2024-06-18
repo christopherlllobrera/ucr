@@ -29,10 +29,4 @@ class draftbilldetails extends Model
     {
         return $this->belongsToMany(draftbill::class, 'draftbill_relation');
     }
-    // public function accrualsdraftbill()
-    // {
-    //     return $this->belongsToMany(draftbill::class, 'accruals');
-    // }
-
-
 }

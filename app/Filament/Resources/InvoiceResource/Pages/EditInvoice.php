@@ -25,9 +25,9 @@ class EditInvoice extends EditRecord
                     ->duration(5000)
             ),
             Action::make('Home')
-            ->label('Return')
-            ->icon('heroicon-o-inbox-stack')
-            ->url(fn ($record) => InvoiceResource::getUrl('index')),
+                ->label('Return')
+                ->icon('heroicon-o-inbox-stack')
+                ->url(fn ($record) => InvoiceResource::getUrl('index')),
         ];
     }
     protected function getFormActions(): array

@@ -32,7 +32,7 @@ class InvoiceDetailsTable extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gr_amount')
-                    ->label('GR Amount')
+                    ->label('Good Receipt Amount')
                     ->searchable()
                     ->sortable()
                     ->money('PHP')

@@ -15,7 +15,7 @@ use Filament\Actions\Action;
 class ListDraftbills extends ListRecords
 {
     protected static string $resource = DraftbillResource::class;
-    protected static ?string $title = 'Draft Bills';
+    protected static ?string $title = 'Draft Bill';
 
     protected function getHeaderActions(): array
     {

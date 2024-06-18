@@ -38,7 +38,7 @@ class InvoiceTable extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('draftbills.draftbill_amount')
-                    ->label('Draftbill Amount')
+                    ->label('Draft Bill Amount')
                     ->money('PHP')
                     ->searchable()
                     ->sortable(),
@@ -48,7 +48,7 @@ class InvoiceTable extends BaseWidget
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('draftbills.draftbill_number')
-                    ->label('Draftbill No.')
+                    ->label('Draft Bill No.')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('invoicerelation.reversal_doc')

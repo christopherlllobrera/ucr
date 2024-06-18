@@ -5,6 +5,7 @@ namespace App\Filament\Resources\AccrualsResource\Pages;
 use App\Models\User;
 use Filament\Actions;
 use App\Models\accrual;
+use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\AccrualsResource;
@@ -24,28 +25,30 @@ class EditAccrualsParkDoc extends EditRecord
     }
     protected function getRedirectUrl(): string
     {
-        //return $this->getResource()::getUrl('index');
-        return $this->getResource()::getUrl('edit-parkdoc', ['record' => $this->getRecord()]);
+        return $this->getResource()::getUrl('index');
+        //return $this->getResource()::getUrl('edit-parkdoc', ['record' => $this->getRecord()]);
     }
     protected function getSavedNotification(): ? Notification
     {
-        $recipient = auth()->user();
         return Notification::make()
             ->success()
             ->title('Park Documents Created')
-            ->body( $this->record->UCR_Park_Doc . ' has been created successfully')
+            ->body('Park Doc No.'. $this->record->UCR_Park_Doc . ' has been created successfully')
             ->iconColor('success')
-            ->duration(5000)
-            ->sendToDatabase($recipient);
+            ->duration(5000);
     }
 
-    // public function mount()
-    // {
-    //     return $this->authorize('EditAccrualsParkDoc', accrual::class);
-
-    //     $user = auth()->user();
-    //     if (Gate::denies('EditAccrualsParkDoc', accrual::class , $user)) {
-    //         throw new AuthorizationException();
-    //     }
-    // }
+    protected function afterSave(): void
+    {
+        Notification::make()
+            ->title('Park Document Added')
+            ->body('Park Doc No. '. $this->record->UCR_Park_Doc . ' has been added successfully to ' . $this->record->ucr_ref_id)
+            // ->actions([
+            //     Action::make('View')
+            //         ->button()
+            //         ->url('/mli/accruals/' . $this->record->id . '/edit-parkdoc', shouldOpenInNewTab:true)
+            //         ->icon('heroicon-o-eye'),
+            // ])
+            ->sendToDatabase(auth()->user());
+    }
 }

@@ -10,17 +10,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCollection extends CreateRecord
 {
     protected static string $resource = CollectionResource::class;
-
     protected static ?string $title = 'Create Collection';
-
     protected static ?string $breadcrumb = 'Create';
-
     protected static bool $canCreateAnother = false;
-
     protected function getCreatedNotification(): ?Notification
     {
-        $recipient = auth()->user();
-
         return Notification::make()
             ->success()
             ->title('UCR Reference ID, Draft Bill No. & Reversal Doc Selected')
@@ -28,7 +22,6 @@ class CreateCollection extends CreateRecord
             ->body($this->record->accruals->ucr_ref_id.','.$this->record->draftbills->draftbill_number.' and '.$this->record->invoices->accounting_document.' has been selected successfully')
             ->iconColor('success')
             ->duration(5000)
-            ->sendToDatabase($recipient)
             ->actions([
                 Action::make('View')
                     ->button()
@@ -37,15 +30,19 @@ class CreateCollection extends CreateRecord
             ]);
 
     }
-
-    // $recipient = auth()->user();
-    //         return Notification::make()
-    //             ->success()
-    //             ->title('UCR Reference ID and Draft Bill No. Selected')
-    //             ->body( $this->record->accruals->ucr_ref_id . ', ' .  $this->record->draftbills->draftbill_no . ' has been selected successfully')
-    //             ->iconColor('success')
-    //             ->duration(5000)
-    //             ->sendToDatabase($recipient);
+    protected function afterCreate(): void
+    {
+        Notification::make()
+            ->title('Collection Alert')
+            ->body($this->record->accruals->ucr_ref_id.','.$this->record->draftbills->draftbill_number.' and '.$this->record->invoices->accounting_document.' has been selected successfully you can now proceed in collection details.')
+            ->actions([
+                Action::make('View collection')
+                    ->button()
+                    ->url('/mli/draftbills/'. $this->record->id . '/edit', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-eye'),
+            ])
+            ->sendToDatabase(auth()->user());
+    }
 
     protected function getFormActions(): array
     {

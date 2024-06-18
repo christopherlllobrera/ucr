@@ -10,11 +10,8 @@ use Filament\Resources\Pages\EditRecord;
 class EditCollection extends EditRecord
 {
     protected static string $resource = CollectionResource::class;
-
     protected static ?string $title = 'Collection';
-
     protected static ?string $breadcrumb = 'Add Collection';
-
     protected function getHeaderActions(): array
     {
         return [
