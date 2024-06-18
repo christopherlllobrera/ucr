@@ -17,13 +17,10 @@ use Filament\Support\RawJs;
 class CollectionRelationManager extends RelationManager
 {
     protected static bool $isLazy = false;
-
     protected static string $relationship = 'collection';
-
     protected static ?string $title = 'Collection Details';
-
     protected static ?string $label = 'Collection';
-
+    
     public function form(Form $form): Form
     {
         return $form
@@ -116,8 +113,8 @@ class CollectionRelationManager extends RelationManager
                             ->title('Collection Created')
                             ->body('The Collection has been created successfully')
                             ->iconColor('success')
-                            ->duration(5000)
-                    ),
+                            ->duration(5000))
+                    ->successRedirectUrl(route('filament.mli.resources.collections.index' )),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

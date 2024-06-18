@@ -24,7 +24,6 @@ class CreateDraftbill extends CreateRecord
             ->body( $this->record->accrual->ucr_ref_id . ' has been selected successfully, you can now proceed to select the draft bill details.')
             ->iconColor('success')
             ->duration(5000)
-            ->sendToDatabase(auth()->user())
             ->actions([
                 Action::make('View')
                     ->button()
@@ -40,6 +39,17 @@ class CreateDraftbill extends CreateRecord
         ];
     }
 
-    
-
+    protected function afterCreate(): void
+    {
+        Notification::make()
+            ->title('Draft Bill Alert')
+            ->body($this->record->accrual->ucr_ref_id . ' has been selected successfully, you can now proceed to select the draft bill details.')
+            ->actions([
+                Action::make('View Accruals')
+                    ->button()
+                    ->url('/mli/draftbills/'. $this->record->id . '/edit', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-eye'),
+            ])
+            ->sendToDatabase(auth()->user());
+    }
 }

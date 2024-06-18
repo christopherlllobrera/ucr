@@ -27,15 +27,10 @@ use Filament\Support\RawJs;
 class DraftbillResource extends Resource
 {
     protected static ?string $model = Draftbill::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
-
     protected static ?string $navigationLabel = 'Draft Bill';
-
     protected static ?string $breadcrumb = 'Draft Bill';
-
     protected static ?int $navigationSort = 3;
-
     public static function form(Form $form): Form
     {
         return $form
@@ -52,7 +47,6 @@ class DraftbillResource extends Resource
                                     return new HtmlString('Select the <strong>UCR Reference ID</strong><br> to auto-fill the fields.');
                                 }
                             })
-                            //->helperText(new HtmlString('Select the <strong>UCR Reference ID</strong> to auto-fill the fields.'))
                             ->relationship('accruals', 'ucr_ref_id')
                             ->required()
                             ->searchable()
@@ -65,8 +59,6 @@ class DraftbillResource extends Resource
                                 'unique' => 'The UCR Reference ID has already been selected.
                         Go to Active Draft Bill Table to add Draft Bill details',
                             ])
-                            // ->icon('heroicon-o-clipboard')
-                            // ->iconPosition(IconPosition::After)
                             ->placeholder('Select UCR Reference ID')
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $accrual = $get('ucr_ref_id');
@@ -122,21 +114,15 @@ class DraftbillResource extends Resource
                             ->disabledOn('edit'),
                         TextInput::make('client_name')
                             ->label('Client Name')
-                            //->maxLength(50)
                             ->reactive()
-                            //->placeholder('Client Name')
                             ->readOnly(),
                         TextInput::make('person_in_charge')
                             ->label('Person-in-charge')
-                            //->maxLength(32)
                             ->reactive()
-                            //->placeholder('Person-in-charge')
                             ->readOnly(),
                         TextInput::make('wbs_no')
                             ->label('WBS No.')
-                            //->maxLength(32)
                             ->reactive()
-                            //->placeholder('WBS No.')
                             ->readOnly(),
                         Select::make('business_unit')
                             ->label('Business Unit')
@@ -159,11 +145,9 @@ class DraftbillResource extends Resource
                             ->disabled(),
                         TextArea::make('particulars')
                             ->label('Particulars')
-                            //->maxLength(255)
                             ->reactive()
                             ->autosize(true)
                             ->rows(2)
-                            //->placeholder('Particulars')
                             ->columnSpanFull()
                             ->hint(function ($state) {
                                 $singleSmsCharactersCount = 255;
@@ -188,7 +172,6 @@ class DraftbillResource extends Resource
                             ->readOnly()
                             ->reactive()
                             ->columnSpanFull()
-                            //->placeholder('Accrual Amount')
                             ->inputMode('decimal'),
                     ])->columnspan(2)
                     ->columns(2),
@@ -252,11 +235,10 @@ class DraftbillResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->emptyStateHeading('No Draft Bill yet')
-            ->emptyStateDescription('Once you create your first draft bill it will appear here.')
+            ->emptyStateHeading('No Draft Bill')
             ->paginated([10, 25, 50])
             ->striped()
-            ->heading('Active Draft Bills')
+            ->heading('Active Draft Bill')
             ->columns([
                 TextColumn::make('accruals.ucr_ref_id')
                     ->label('UCR Reference ID')

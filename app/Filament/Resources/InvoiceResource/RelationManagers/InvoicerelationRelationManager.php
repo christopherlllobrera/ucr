@@ -131,26 +131,16 @@ class InvoicerelationRelationManager extends RelationManager
                                 ->required()
                                 ->columnSpan(1),
                         ])->columns(3),
-                    // Section::make()
-                    //     ->schema([
-                    //     TextInput::make('UCR_Park_Doc')
-                    //         ->label('UCR Park Document No.')
-                    //         ->placeholder('UCR Park Document No.'),
-                    //         //->disabledOn('create'),
-                    //         //->hiddenOn('create'),
-                    //     DatePicker::make('Date_Accrued')
-                    //         ->label('Date Accrued in SAP')
-                    //         //->hiddenOn('create'),
-                    //     ])->columnspan(1)->columns(1)//->hiddenOn('create'),
             ])->columns(3);
     }
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('reversal_doc')
-            ->emptyStateHeading('No invoice yet')
-            ->emptyStateDescription('Once you create your first invoice, it will appear here.')
+            ->emptyStateHeading('No invoice')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID'),
                 Tables\Columns\TextColumn::make('reversal_doc')
                     ->label('Reversal Document')
                     ->searchable()
@@ -196,16 +186,15 @@ class InvoicerelationRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                        ->label('Create Invoice')
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Invoice Created')
-                                ->body('The Invoice has been created successfully')
-                                ->iconColor('success')
-                                ->duration(5000),
+                    ->label('Create Invoice')
+                    ->successNotification(
+                        Notification::make()
+                            ->success()
+                            ->title('Invoice Created')
+                            ->body('The Invoice has been created successfully')
+                            ->iconColor('success')                                ->duration(5000),
                         )
-                        //->keyBindings(['command+s', 'ctrl+s']),
+                    ->successRedirectUrl(route('filament.mli.resources.invoices.index' )),
 
             ])
             ->actions([

@@ -30,15 +30,10 @@ use Filament\Support\RawJs;
 class CollectionResource extends Resource
 {
     protected static ?string $model = collection::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-
     protected static ?string $navigationLabel = 'Collection';
-
     protected static ?int $navigationSort = 5;
-
     protected static ?string $breadcrumb = 'Collection';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -271,10 +266,10 @@ class CollectionResource extends Resource
                             ->native(false)
                             ->disabledOn('edit'),
                         TextInput::make('draftbill_number')
-                            ->label('Draftbill No.')
+                            ->label('Draft Bill No.')
                             ->readOnly(),
                         TextInput::make('draftbill_amount')
-                            ->label('Draftbill Amount')
+                            ->label('Draft Bill Amount')
                             ->prefix('₱')
                             ->readOnly()
                             ->mask(RawJs::make('$money($input)'))
@@ -289,7 +284,7 @@ class CollectionResource extends Resource
                             ->label('Date Approved by Client')
                             ->readOnly(),
                         TextArea::make('draftbill_particular')
-                            ->label('Draftbill Particular')
+                            ->label('Draft Bill Particular')
                             ->columnSpan(2)
                             ->readOnly(),
                         FileUpload::make('bill_attachment')
@@ -437,7 +432,7 @@ class CollectionResource extends Resource
                             ->label('Posting Date')
                             ->readOnly(),
                         FileUpload::make('invoice_attachment')
-                            ->label('Attachments')
+                            ->label('Invoice Attachments')
                             ->deletable(true)
                             ->multiple()
                             ->disabled()
@@ -454,17 +449,7 @@ class CollectionResource extends Resource
                             ->downloadable()
                             ->openable()
                             ->columnSpan(2)
-                            ->deletable()
-                        // #IMAGE Settings
-                        // ->image()
-                        // ->imageEditor()
-                        // ->imageResizeMode('force')
-                        // ->imageCropAspectRatio('8:5')
-                        // ->imageResizeTargetWidth('1920')
-                        // ->imageResizeTargetHeight('1080')
-                        // ->imageEditorViewportWidth('1920')
-                        // ->imageEditorViewportHeight('1080'),
-                        ,
+                            ->deletable(),
                     ])->columnspan(2)
                     ->columns(2),
             ])->columns(6);
@@ -473,8 +458,7 @@ class CollectionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->emptyStateHeading('No Collection yet')
-            ->emptyStateDescription('Once you create your first collection, it will appear here.')
+            ->emptyStateHeading('No Collection')
             ->paginated([10, 25, 50])
             ->heading('Active Collection')
             ->columns([
@@ -515,7 +499,7 @@ class CollectionResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('collection.or_number')
-                    ->label('OR No.')
+                    ->label('Official Receipt No.')
                     ->searchable()
                     ->sortable(),
             ])

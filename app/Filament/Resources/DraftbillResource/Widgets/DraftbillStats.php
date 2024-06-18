@@ -32,12 +32,12 @@ class DraftbillStats extends BaseWidget
 
         return [
             Stat::make('Draftbills Created', draftbilldetails::count())
-                ->description('Total Draft bill created')
+                ->description('Total Draft Bill created')
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('success')
                 ->chart([1, 100, 500, 800, 900, 1000, draftbilldetails::count()]),
-            Stat::make('Total Draftbills Amount','₱'. $formatNumber (draftbilldetails::sum('draftbill_amount')))
-                ->description('Total Draft bill amount')
+            Stat::make('Total Draft Bills Amount','₱'. $formatNumber (draftbilldetails::sum('draftbill_amount')))
+                ->description('Total Draft Bill amount')
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('primary')
                 ->chart([1,500000, draftbilldetails::sum('draftbill_amount')]),

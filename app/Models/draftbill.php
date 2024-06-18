@@ -22,9 +22,7 @@ class draftbill extends Model
     }
     public function draftbillno()
     {
-        return $this->belongsToMany(draftbill::class, 'draftbill_no')
-        //->withPivot('id', 'draftbill_id', 'draftbilldetails_id')
-        ;
+        return $this->belongsToMany(draftbill::class, 'draftbill_no');
     }
 
     public function draftbilldetails()//for draftbill table

@@ -18,22 +18,34 @@ class CreateInvoice extends CreateRecord
 
     protected function getCreatedNotification(): ?Notification
     {
-        $recipient = auth()->user();
             return Notification::make()
                 ->success()
                 ->title('UCR Reference ID and Draft Bill No. Selected')
-                ->body( $this->record->accruals->ucr_ref_id . ' and ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
+                ->body($this->record->accruals->ucr_ref_id . ' and ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
                 ->iconColor('success')
                 ->duration(5000)
-                ->sendToDatabase($recipient)
                 ->actions([
-                    Action::make('View')
+                    Action::make('View Invoice')
                         ->button()
                         ->url('/mli/invoices/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
                         ->icon('heroicon-o-eye'),
-                ]);;
-
+                ]);
     }
+
+    protected function afterCreate(): void
+    {
+        Notification::make()
+            ->title('Invoice Alert')
+            ->body('UCR Ref ID ' . $this->record->accruals->ucr_ref_id . ' and Draft Bill No. ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
+            ->actions([
+                Action::make('View Invoice')
+                    ->button()
+                    ->url('/mli/invoices/' . $this->record->id . '/edit', shouldOpenInNewTab:true)
+                    ->icon('heroicon-o-eye'),
+            ])
+            ->sendToDatabase(auth()->user());
+    }
+    
     protected function getFormActions(): array
     {
         return [

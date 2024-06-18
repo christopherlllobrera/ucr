@@ -15,30 +15,24 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Spatie\Permission\Traits\HasPermissions;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\HtmlString;
-use Filament\Support\RawJs;
+use Illuminate\Support\Str;
 
-use function Livewire\after;
 
 class AccrualsResource extends Resource
 {
     protected static ?string $model = accrual::class;
-
+    protected static ?string $navigationLabel = 'Accrual';
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-
     protected static ?int $navigationSort = 1;
-
     protected static bool $softDelete = true;
-
     public static function form(Form $form): Form
     {
         return $form
@@ -51,7 +45,6 @@ class AccrualsResource extends Resource
                                 if ($lastUcrRefId) {
                                     // Extract the numeric part (assuming format "UCR-CE-xxxxxx")
                                     $lastNumber = (int) Str::afterLast($lastUcrRefId, '-');
-
                                     return 'UCR-CE-'.str_pad(++$lastNumber, 6, '0', STR_PAD_LEFT);
                                 } else {
                                     // Handle the case where no UCR reference IDs exist yet
@@ -165,15 +158,6 @@ class AccrualsResource extends Resource
                             ->openable()
                             ->reorderable()
                             ->uploadingMessage('Uploading Accrual attachment...')
-                                // #IMAGE Settings
-                                // ->image()
-                                // ->imageEditor()
-                                // ->imageResizeMode('force')
-                                // ->imageCropAspectRatio('8:5')
-                                // ->imageResizeTargetWidth('1920')
-                                // ->imageResizeTargetHeight('1080')
-                                // ->imageEditorViewportWidth('1920')
-                                // ->imageEditorViewportHeight('1080'),
                             ->columnSpanFull(),
                     ])->columnspan(2)
                     ->columns(2),
@@ -182,7 +166,7 @@ class AccrualsResource extends Resource
                         DatePicker::make('period_started')
                             ->label('Period started')
                             ->required()
-                            //->visibleOn(auth()->user()->hasPermissionTo('edit-park-doc'))
+                            //->visibleOn(auth()->user()->hasPermissionTo('edit-park-doc')) // still not working
                             ->disabledOn(Pages\EditAccrualsParkDoc::class)
                             ->minDate(now()->subYears(3)),
                         DatePicker::make('period_ended')
@@ -234,11 +218,11 @@ class AccrualsResource extends Resource
                             ->placeholder('UCR Park Document No.')
                             ->required()
                             ->numeric()
-                            //->required(fn (string $operation): bool => $operation === 'edit')
+                            ->required(fn (string $operation): bool => $operation === 'edit')
                             ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
                         DatePicker::make('date_accrued')
                             ->label('Date Accrued in SAP')
-                            ->required()
+                            ->required(fn (string $operation): bool => $operation === 'edit')
                             ->hiddenOn([Pages\EditAccruals::class, Pages\CreateAccruals::class]),
                     ])->columnspan(1),
             ])
@@ -249,8 +233,7 @@ class AccrualsResource extends Resource
     {
         return $table
             ->striped()
-            ->emptyStateHeading('No Accruals yet')
-            ->emptyStateDescription('Once you create your first accrual, it will appear here.')
+            ->emptyStateHeading('No Accruals')
             ->paginated([10, 25, 50])
             ->columns([
                 TextColumn::make('ucr_ref_id')

@@ -30,12 +30,12 @@ class InvoiceStats extends BaseWidget
         };
         return [
             Stat::make('Invoice Created', invoicedetails::count())
-            ->description('Total Accrual created')
+            ->description('Total Invoice Created')
             ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
             ->color('success')
             ->chart([1, 100, invoicedetails::count()]),
             Stat::make('Total Good Receipt Amount', '₱' . $formatNumber(invoicedetails::sum('gr_amount')))
-                ->description('Total Good Receipt amount')
+                ->description('Total Good Receipt Amount')
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->chart([1, 100000, invoicedetails::sum('gr_amount')])
                 ->color('primary'),

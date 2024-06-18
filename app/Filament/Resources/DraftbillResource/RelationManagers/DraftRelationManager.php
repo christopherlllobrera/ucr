@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DraftbillResource\RelationManagers;
 
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
@@ -11,11 +12,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Http\RedirectResponse;
 use Filament\Support\RawJs;
-
+use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Table;
 
 class DraftRelationManager extends RelationManager
 {
@@ -25,7 +25,6 @@ class DraftRelationManager extends RelationManager
     protected static bool $isLazy = false;
     protected static ?string $label = 'Draft Bill';
     protected static bool $canCreateAnother = false;
-
 
     public function form(Form $form): Form
     {
@@ -64,7 +63,6 @@ class DraftRelationManager extends RelationManager
                                     $smsCount = ceil(strlen($state) / $singleSmsCharactersCount);
                                 }
                                 $leftCharacters = $singleSmsCharactersCount - ($charactersCount % $singleSmsCharactersCount);
-
                                 return $leftCharacters.' characters';
                             }),
                         FileUpload::make('bill_attachment')
@@ -105,10 +103,11 @@ class DraftRelationManager extends RelationManager
     {
         return $table
             //->recordTitleAttribute('draftbill_no')
-            ->emptyStateHeading('No draft bills yet')
-            ->emptyStateDescription('Once you create your first draft bill, it will appear here.')
+            ->emptyStateHeading('No draft bills')
             ->heading('Draft Bills')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                ->label('ID'),
                 Tables\Columns\TextColumn::make('draftbill_number')
                     ->label('Draft Bill No.')
                     ->searchable()
@@ -145,7 +144,7 @@ class DraftRelationManager extends RelationManager
             ->filters([
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make('Create Draft Bill')
+                CreateAction::make('Create Draft Bill')
                     ->label('Create Draft Bill')
                     ->successNotification(
                         Notification::make()
@@ -153,9 +152,9 @@ class DraftRelationManager extends RelationManager
                             ->title('Draft Bill Created')
                             ->body('The Draft  Bill has been created successfully')
                             ->iconColor('success')
-                            ->duration(5000),
-                    ),
-
+                            ->duration(5000)
+                    )
+                    ->successRedirectUrl(route('filament.mli.resources.draftbills.index')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

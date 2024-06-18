@@ -14,7 +14,6 @@ class ListCollections extends ListRecords
     protected static string $resource = CollectionResource::class;
     protected static ?string $title = 'Collection';
 
-
     protected function getHeaderActions(): array
     {
         return [
@@ -26,9 +25,7 @@ class ListCollections extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-
             CollectionStats::class,
-
         ];
     }
     protected function getFooterWidgets(): array
@@ -36,7 +33,6 @@ class ListCollections extends ListRecords
         return [
             InvoiceTable::class,
             //InvoiceDetailsTable::class,
-
         ];
     }
 }
