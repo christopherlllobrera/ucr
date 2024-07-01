@@ -37,7 +37,6 @@ class AuthServiceProvider extends ServiceProvider
         Activity::class => ActivityPolicy::class,
         User::class => UserPolicy::class,
         Role::class => RolePolicy::class,
-
         accrual::class => AccrualPolicy::class,
         collection::class => CollectionPolicy::class,
         collectiondetails::class => CollectiondetailsPolicy::class,

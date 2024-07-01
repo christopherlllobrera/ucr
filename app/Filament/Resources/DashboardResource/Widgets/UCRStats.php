@@ -16,7 +16,10 @@ class UCRStats extends BaseWidget
     protected static ?string $pollingInterval = '10s';
     protected static bool $isLazy = false;
 
-    protected int | string | array $columnSpan = '3';
+    protected int | string | array $columnSpan = [
+        'md' => 4,
+        'xl' => 5,
+    ];
 
 
     protected function getStats(): array
@@ -35,28 +38,29 @@ class UCRStats extends BaseWidget
             return Number::format($number / 1000000000, 2) . 'B';
         };
 
-
-
         return [
-            Stat::make('Accruals Created', accrual::count())
+            Stat::make('Accruals Counts', accrual::count())
             ->description('Total Accrual created')
-            ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
-            ->color('success')
-            ->chart([1, 100, 500, 800, 900, 1000, accrual::count()]),
+
+            //->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
+            //->color('success')
+            //->chart([1, 100, 500, 800, 900, 1000, accrual::count()])
+            ,
             Stat::make('Pending Draft Bill', (accrual::count() - draftbilldetails::count()) )
-                ->description('Total Pending Draft Bill')
-                ->descriptionIcon('heroicon-o-arrow-trending-down', IconPosition::After)
-                ->color('danger')
-                ->chart([1000, 500, 300, 200, 100, (accrual::count() - draftbilldetails::count()) ]),
-            Stat::make('Total Accrued', '₱' . $formatNumber (accrual::sum('accrual_amount')))
-                ->description('Total Accrual Amount')
-                ->descriptionIcon('heroicon-o-currency-dollar', IconPosition::After)
-                ->color('info')
-                ->chart([1,5000000 , accrual::sum('accrual_amount')]),
-            // Stat::make('Invoice Created', invoicedetails::count()),
-            // Stat::make('Collection Created', collectiondetails::count()),
-
-
+                ->description(draftbilldetails::count() . ' Total Draft Bill Created')
+            //    ->descriptionIcon('heroicon-o-arrow-trending-down', IconPosition::After)
+            //    ->color('danger')
+            //    ->chart([1000, 500, 300, 200, 100, (accrual::count() - draftbilldetails::count()) ])
+            ,
+            // Stat::make('Total Accrued', '₱' . $formatNumber (accrual::sum('accrual_amount')))
+            //     ->description('Total Accrual Amount')
+            //     ->descriptionIcon('heroicon-o-currency-dollar', IconPosition::After)
+            //     ->color('info')
+            //     ->chart([1,5000000 , accrual::sum('accrual_amount')]),
+             Stat::make('Invoice Count', invoicedetails::count())
+                ->description('Total Invoice Created'),
+             Stat::make('Collection Count', collectiondetails::count())
+                ->description('Total Collection Created'),
         ];
     }
 }

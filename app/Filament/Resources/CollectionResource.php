@@ -2,38 +2,43 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Tables;
+use App\Filament\Resources\CollectionResource\Pages;
+use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
 use App\Models\accrual;
-use App\Models\invoice;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use App\Models\draftbill;
 use App\Models\collection;
-use Filament\Tables\Table;
-use App\Models\invoicedetails;
+use App\Models\draftbill;
 use App\Models\draftbilldetails;
-use Filament\Resources\Resource;
-use Illuminate\Support\HtmlString;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
+use App\Models\invoice;
+use App\Models\invoicedetails;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use App\Filament\Resources\CollectionResource\Pages;
-use Illuminate\Support\Collection as BaseCollection;
-use App\Filament\Resources\CollectionResource\RelationManagers\CollectionRelationManager;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
 use Filament\Support\RawJs;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Collection as BaseCollection;
+use Illuminate\Support\HtmlString;
 
 class CollectionResource extends Resource
 {
     protected static ?string $model = collection::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+
     protected static ?string $navigationLabel = 'Collection';
+
     protected static ?int $navigationSort = 5;
+
     protected static ?string $breadcrumb = 'Collection';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -85,6 +90,7 @@ class CollectionResource extends Resource
                                     $set('contract_type', null);
                                     $set('accrual_amount', null);
                                     $set('draftbill_no', null);
+                                    $set('draftbill_number', null);
                                     $set('draftbill_amount', null);
                                     $set('draftbill_particular', null);
                                     $set('bill_date_created', null);
@@ -92,6 +98,21 @@ class CollectionResource extends Resource
                                     $set('bill_date_approved', null);
                                     $set('UCR_Park_Doc', null);
                                     $set('accruals_attachment', null);
+
+                                    $set('accounting_doc', null);
+                                    $set('reversal_doc', null);
+                                    $set('gr_amount', null);
+                                    $set('date_reversal', null);
+                                    $set('accounting_document', null);
+                                    $set('invoice_date_received', null);
+                                    $set('pojo_no', null);
+                                    $set('gr_no_meralco', null);
+                                    $set('billing_statement', null);
+                                    $set('invoice_date_approved', null);
+                                    $set('invoice_posting_date', null);
+                                    $set('invoice_posting_amount', null);
+                                    $set('invoice_date_forwarded', null);
+                                    $set('invoice_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
@@ -108,6 +129,7 @@ class CollectionResource extends Resource
                                     $set('contract_type', $accrual->contract_type);
                                     $set('accrual_amount', $accrual->accrual_amount);
                                     $set('UCR_Park_Doc', $accrual->UCR_Park_Doc);
+                                    $set('accruals_attachment', $accrual->accruals_attachment);
                                 }
                             })
                             ->disabledOn('edit'),
@@ -242,12 +264,31 @@ class CollectionResource extends Resource
                                     $set('bill_date_approved', $draft->bill_date_approved);
                                     $set('bill_attachment', $draft->bill_attachment);
                                 } else {
+                                    //
+                                    $set('draftbill_no', null);
+                                    $set('draftbill_number', null);
                                     $set('draftbill_amount', null);
+                                    $set('draftbill_number', null);
                                     $set('draftbill_particular', null);
                                     $set('bill_date_created', null);
                                     $set('bill_date_submitted', null);
                                     $set('bill_date_approved', null);
                                     $set('bill_attachment', null);
+                                    //
+                                    $set('accounting_doc', null);
+                                    $set('reversal_doc', null);
+                                    $set('gr_amount', null);
+                                    $set('date_reversal', null);
+                                    $set('accounting_document', null);
+                                    $set('invoice_date_received', null);
+                                    $set('pojo_no', null);
+                                    $set('gr_no_meralco', null);
+                                    $set('billing_statement', null);
+                                    $set('invoice_date_approved', null);
+                                    $set('invoice_posting_date', null);
+                                    $set('invoice_posting_amount', null);
+                                    $set('invoice_date_forwarded', null);
+                                    $set('invoice_attachment', null);
                                 }
                             })
                             ->AfterStateHydrated(function (Get $get, Set $set) {
