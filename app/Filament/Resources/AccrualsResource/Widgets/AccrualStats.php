@@ -12,6 +12,11 @@ class AccrualStats extends BaseWidget
 {
     protected static ?string $pollingInterval = '10s';
     protected static bool $isLazy = false;
+    protected int | string | array $columnSpan = [
+        'md' => 4,
+        'xl' => 5,
+    ];
+
     protected function getStats(): array
     {
         $formatNumber = function (int $number): string {

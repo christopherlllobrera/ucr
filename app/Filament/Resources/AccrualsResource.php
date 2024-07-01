@@ -12,7 +12,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\Section as InfolistSection;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\RawJs;
@@ -20,19 +25,24 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
-
 class AccrualsResource extends Resource
 {
     protected static ?string $model = accrual::class;
+
     protected static ?string $navigationLabel = 'Accrual';
+
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
     protected static ?int $navigationSort = 1;
+
     protected static bool $softDelete = true;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -45,6 +55,7 @@ class AccrualsResource extends Resource
                                 if ($lastUcrRefId) {
                                     // Extract the numeric part (assuming format "UCR-CE-xxxxxx")
                                     $lastNumber = (int) Str::afterLast($lastUcrRefId, '-');
+
                                     return 'UCR-CE-'.str_pad(++$lastNumber, 6, '0', STR_PAD_LEFT);
                                 } else {
                                     // Handle the case where no UCR reference IDs exist yet
@@ -297,28 +308,124 @@ class AccrualsResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])->defaultSort('ucr_ref_id', 'desc')
             // ->recordUrl(null)
-            ->recordUrl(
-                fn (accrual $record): string => Pages\EditAccrualsParkDoc::getUrl([$record->id]),
-            )
+            // ->recordUrl(
+            //     fn (accrual $record): string => Pages\EditAccrualsParkDoc::getUrl([$record->id]),
+            // )
             ->filters([
                 //
             ])
             ->actions([
                 ActionGroup::make([
                     EditAction::make(),
+                    ViewAction::make(),
                     Action::make('edit')
                         ->label('Add Park Doc')
                         ->icon('heroicon-o-document-text')
                         ->url(fn ($record) => AccrualsResource::getUrl('edit-parkdoc', ['record' => $record->id]))
                         ->visible(fn ($record) => $record->UCR_Park_Doc == null),
                     // ->visible(fn() => HasPermissions ('update-accrual'))
-                ]),
+                ])
+                    ->button()
+                    ->label('Actions')
+                    ->tooltip('Actions')
+                    ->size(ActionSize::ExtraSmall)
+                    ->icon('heroicon-m-ellipsis-horizontal'),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                InfolistSection::make('Accruals Details')
+                    ->icon('heroicon-m-banknotes')
+                    ->schema([
+                        TextEntry::make('ucr_ref_id')
+                            ->label('UCR Reference ID')
+                            ->weight(FontWeight::Bold)
+                            ->icon('heroicon-o-clipboard')
+                            ->iconPosition(IconPosition::After)
+                            ->copyable()
+                            ->copyMessage('Copied!')
+                            ->copyMessageDuration(1500),
+                        TextEntry::make('client_name')
+                            ->label('Client'),
+                        TextEntry::make('person_in_charge')
+                            ->icon('heroicon-o-user')
+                            ->label('Person-in-charge'),
+                        TextEntry::make('wbs_no')
+                            ->label('WBS No.'),
+                        TextEntry::make('accrual_amount')
+                            ->label('Accrual Amount')
+                            ->money('Php'),
+                        TextEntry::make('contract_type')
+                            ->label('Contract Type')
+                            ->icon('heroicon-o-document-check'),
+                        TextEntry::make('business_unit')
+                            ->label('Business Unit')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'Facility Services' => 'gray',
+                                'Transport Services' => 'warning',
+                                'Warehouse Services' => 'success',
+                                'General Services' => 'info',
+                                'Cons & Reno Services' => 'primary',
+                            }),
+                        TextEntry::make('period_started')
+                            ->label('Period started')
+                            ->date()
+                            ->icon('heroicon-o-calendar-days'),
+                        TextEntry::make('period_ended')
+                            ->label('Period ended')
+                            ->icon('heroicon-o-calendar-days'),
+                        TextEntry::make('month')
+                            ->label('Month')
+                            ->icon('heroicon-o-calendar'),
+                        TextEntry::make('UCR_Park_Doc')
+                            ->label('UCR Park Doc No.'),
+                        TextEntry::make('date_accrued')
+                            ->label('Date Accrued in SAP')
+                            ->date()
+                            ->icon('heroicon-o-calendar-days'),
+                        TextEntry::make('particulars')
+                            ->label('Particulars')
+                            ->lineClamp(2)
+                            ->columnSpanFull(),
+                        TextEntry::make('accruals_attachment')
+                            ->label('Attachments')
+                            ->columnSpanFull(),
+                    ])->columnspan([
+                        'default' => 2,
+                        'sm' => 3,
+                        'md' => 4,
+                        'lg' => 4,
+                        'xl' => 5,
+                        '2xl' => 6,
+                    ])
+                    ->columns([
+                        'default' => 2,
+                        'sm' => 3,
+                        'md' => 4,
+                        'lg' => 4,
+                        'xl' => 5,
+                        '2xl' => 6,
+                    ]),
+
+                // Fieldset::make('Date created and updated')
+                //     ->schema([
+                //         TextEntry::make('created_at')
+                //             ->icon('heroicon-o-calendar')
+                //             ->dateTime(),
+                //         TextEntry::make('updated_at')
+                //             ->icon('heroicon-o-calendar')
+                //             ->dateTime(),
+                //     ])->columnspan(1)->columns(1),
+            ])->columns(4);
     }
 
     public static function getRelations(): array
@@ -335,6 +442,7 @@ class AccrualsResource extends Resource
             'create' => Pages\CreateAccruals::route('/create'),
             'edit' => Pages\EditAccruals::route('/{record}/edit'),
             'edit-parkdoc' => Pages\EditAccrualsParkDoc::route('/{record}/edit-parkdoc'),
+            'view' => Pages\ViewAccruals::route('/{record}/view'),
 
         ];
     }

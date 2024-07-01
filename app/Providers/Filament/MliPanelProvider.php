@@ -55,8 +55,8 @@ class MliPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                     UCRStats::class,
-                    // UCRTable::class,
-                    // RevenueAccrualsChart::class,
+                    //UCRTable::class,
+                    //RevenueAccrualsChart::class,
             ])
             ->plugins([
                 FilamentApexChartsPlugin::make()

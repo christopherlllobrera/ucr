@@ -4,8 +4,8 @@ namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
 use Filament\Actions;
-use Filament\Pages\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditInvoice extends EditRecord
@@ -16,14 +16,16 @@ class EditInvoice extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()->successNotification(
-                Notification::make()
-                    ->success()
-                    ->title('Active Invoice Deleted')
-                    ->body( $this->record->accruals->ucr_ref_id . ' and ' .  $this->record->draftbills->draftbill_number . ' has been selected successfully')
-                    ->iconColor('success')
-                    ->duration(5000)
-            ),
+            Actions\DeleteAction::make()
+                ->label('Delete Selected')
+                ->successNotification(
+                    Notification::make()
+                        ->success()
+                        ->title('Active Invoice Deleted')
+                        ->body($this->record->accruals->ucr_ref_id.' and '.$this->record->draftbills->draftbill_number.' has been selected successfully')
+                        ->iconColor('success')
+                        ->duration(5000)
+                ),
             Action::make('Home')
                 ->label('Return')
                 ->icon('heroicon-o-inbox-stack')

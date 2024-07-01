@@ -36,7 +36,7 @@ class CollectionStats extends BaseWidget
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('success')
                 ->chart([1, 2, collectiondetails::count()]),
-                Stat::make('Total GR Amount', '₱' . $formatNumber(collectiondetails::sum('amount_collected')))
+                Stat::make('Total Amount Collected', '₱' . $formatNumber(collectiondetails::sum('amount_collected')))
                 ->description('Total amount collected')
                 ->descriptionIcon('heroicon-o-arrow-trending-up', IconPosition::After)
                 ->color('primary')

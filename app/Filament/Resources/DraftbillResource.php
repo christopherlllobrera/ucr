@@ -2,27 +2,32 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DraftbillResource\Pages;
-use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManager;
+use Filament\Tables;
 use App\Models\accrual;
-use App\Models\draftbill;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\IconPosition;
-use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
+use App\Models\draftbill;
 use Filament\Tables\Table;
-use Illuminate\Support\HtmlString;
 use Filament\Support\RawJs;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Support\Enums\IconPosition;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\TextEntry;
+use App\Filament\Resources\DraftbillResource\Pages;
+use Filament\Infolists\Components\Section as InfolistSection;
+use App\Filament\Resources\DraftbillResource\RelationManagers\DraftRelationManager;
 
 class DraftbillResource extends Resource
 {
@@ -305,6 +310,8 @@ class DraftbillResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->slideOver(),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
@@ -312,7 +319,129 @@ class DraftbillResource extends Resource
                 // ]),
             ]);
     }
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
 
+            InfolistSection::make('Draftbill Details')
+                ->icon('heroicon-m-wallet')
+                ->schema([
+                    TextEntry::make('draft.draftbill_number')
+                        ->label('Draft Bill No.')
+                        ->weight(FontWeight::Bold)
+                        ->icon('heroicon-o-clipboard')
+                        ->iconPosition(IconPosition::After)
+                        ->copyable()
+                        ->copyMessage('Copied!')
+                        ->copyMessageDuration(1500),
+                    TextEntry::make('draft.draftbill_amount')
+                        ->label('Draft Bill Amount')
+                        ->money('Php'),
+                    TextEntry::make('draft.bill_attachment')
+                        ->label('Draft Bill Attachments')
+                        ->icon('heroicon-o-attachment'),
+                    TextEntry::make('draft.bill_date_created')
+                        ->label('Date Created')
+                        ->date()
+                        ->icon('heroicon-o-calendar-days'),
+                    TextEntry::make('draft.bill_date_submitted')
+                        ->label('Date Submitted to Client')
+                        ->date()
+                        ->icon('heroicon-o-calendar-days'),
+                    TextEntry::make('draft.bill_date_approved')
+                        ->label('Date Approved by Client')
+                        ->date()
+                        ->icon('heroicon-o-calendar-days'),
+                    TextEntry::make('draft.draftbill_particular')
+                        ->label('Particular')
+                        ->columnSpanFull(),
+                ])->columnspan(3)->collapsible()
+                    ->columns([
+                        'default' => 2,
+                        'sm' => 3,
+                        'md' => 4,
+                        'lg' => 3,
+                        'xl' => 3,
+                        '2xl' => 3,
+                    ]),
+                InfolistSection::make('Accruals Details')
+                ->icon('heroicon-m-banknotes')
+                ->schema([
+                    TextEntry::make('accruals.ucr_ref_id')
+                        ->label('UCR Reference ID')
+                        ->weight(FontWeight::Bold)
+                        ->icon('heroicon-o-clipboard')
+                        ->iconPosition(IconPosition::After)
+                        ->copyable()
+                        ->copyMessage('Copied!')
+                        ->copyMessageDuration(1500),
+                    TextEntry::make('accruals.client_name')
+                        ->label('Client'),
+                    TextEntry::make('accruals.person_in_charge')
+                        ->icon('heroicon-o-user')
+                        ->label('Person-in-charge'),
+                    TextEntry::make('accruals.wbs_no')
+                        ->label('WBS No.'),
+                    TextEntry::make('accruals.accrual_amount')
+                        ->label('Accrual Amount')
+                        ->money('Php'),
+                    TextEntry::make('accruals.contract_type')
+                        ->label('Contract Type')
+                        ->icon('heroicon-o-document-check'),
+                    TextEntry::make('accruals.business_unit')
+                        ->label('Business Unit')
+                        ->badge()
+                        ->color(fn (string $state): string => match ($state) {
+                            'Facility Services' => 'gray',
+                            'Transport Services' => 'warning',
+                            'Warehouse Services' => 'success',
+                            'General Services' => 'info',
+                            'Cons & Reno Services' => 'primary',
+                        }),
+                    TextEntry::make('accruals.period_started')
+                        ->label('Period started')
+                        ->date()
+                        ->icon('heroicon-o-calendar-days'),
+                    TextEntry::make('accruals.period_ended')
+                        ->label('Period ended')
+                        ->icon('heroicon-o-calendar-days'),
+                    TextEntry::make('accruals.month')
+                        ->label('Month')
+                        ->icon('heroicon-o-calendar'),
+                    TextEntry::make('accruals.UCR_Park_Doc')
+                        ->label('UCR Park Doc No.'),
+                    TextEntry::make('accruals.date_accrued')
+                        ->label('Date Accrued in SAP')
+                        ->date()
+                        ->icon('heroicon-o-calendar-days'),
+                    TextEntry::make('accruals.particulars')
+                        ->label('Particulars')
+                        ->lineClamp(2)
+                        ->columnSpanFull(),
+                ])->columnspan(3)->columns([
+                        'default' => 2,
+                        'sm' => 3,
+                        'md' => 4,
+                        'lg' => 3,
+                        'xl' => 3,
+                        '2xl' => 3,
+                    ]),
+                Fieldset::make('Date created and updated')
+                ->schema([
+                    TextEntry::make('draft.created_at')
+                        ->label('Date Created')
+                        ->icon('heroicon-o-calendar-days')
+                        ->dateTime(),
+                    TextEntry::make('draft.updated_at')
+                        ->label('Date Updated')
+                        ->icon('heroicon-o-calendar-days')
+                        ->dateTime(),
+                ])->columnspan(2)->columns([
+                    'default' => 1,
+                ]),
+            ])->columns(3);
+    }
     public static function getRelations(): array
     {
         return [
